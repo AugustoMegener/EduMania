@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagens - EduMania Pro</title>
+    <link rel="stylesheet" href="mensagem.css">
+</head>
+<body>
+    <!-- Main container usando semantic HTML -->
+    <main class="mensagens-container">
+        
+        <!-- Sidebar com lista de conversas -->
+        <aside class="conversas-sidebar" role="complementary">
+            <!-- Header da sidebar -->
+            <header class="sidebar-header">
+                <div class="usuario-info">
+                    <figure class="avatar-container">
+                        <img src="http://i.pinimg.com/736x/06/6d/f2/066df26b64d0a86febfbf4ec46b60578.jpg" alt="Avatar do usuário" class="avatar">
+                    </figure>
+                    <h1 class="usuario-nome">João Silva</h1>
+                </div>
+                <nav class="sidebar-actions" aria-label="Ações do usuário">
+                    <button class="btn-icon" aria-label="Novo grupo" title="Novo grupo">
+                        <span class="icon">👥</span>
+                    </button>
+                    <button class="btn-icon" aria-label="Nova mensagem" title="Nova mensagem">
+                        <span class="icon">✏️</span>
+                    </button>
+                    <button class="btn-icon" aria-label="Menu" title="Menu">
+                        <span class="icon">⋮</span>
+                    </button>
+                </nav>
+            </header>
+
+            <!-- Busca de conversas -->
+            <section class="busca-section">
+                <form class="busca-form" role="search">
+                    <label for="busca-conversas" class="visually-hidden">Buscar conversas</label>
+                    <input 
+                        type="search" 
+                        id="busca-conversas" 
+                        class="busca-input" 
+                        placeholder="Buscar ou iniciar uma conversa"
+                        aria-label="Buscar conversas"
+                    >
+                </form>
+            </section>
+
+            <!-- Lista de conversas -->
+            <section class="conversas-lista" role="list">
+                <!-- Conversa individual ativa -->
+                <article class="conversa-item ativa" role="listitem" tabindex="0" data-conversa-id="1">
+                    <figure class="conversa-avatar">
+                        <img src="https://i.pinimg.com/736x/19/06/bf/1906bfe74bee762673849fce012edbc4.jpg" alt="Avatar de Maria Santos">
+                    </figure>
+                    <div class="conversa-info">
+                        <header class="conversa-header">
+                            <h2 class="conversa-nome">Maria Santos</h2>
+                            <time class="conversa-horario" datetime="2025-10-25T14:30">14:30</time>
+                        </header>
+                        <div class="conversa-preview">
+                            <p class="ultima-mensagem">Oi! Viu o trabalho de Cálculo?</p>
+                            <span class="badge-nao-lidas" aria-label="3 mensagens não lidas">3</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Grupo -->
+                <article class="conversa-item grupo" role="listitem" tabindex="0" data-conversa-id="2">
+                    <figure class="conversa-avatar">
+                        <img src="https://i.pinimg.com/736x/c0/ed/1f/c0ed1fa74e7141d9cf2d696640472d3e.jpg" alt="Avatar do grupo Turma 2025">
+                    </figure>
+                    <div class="conversa-info">
+                        <header class="conversa-header">
+                            <h2 class="conversa-nome">
+                                <span class="icon-grupo">👥</span>
+                                Turma 2025
+                            </h2>
+                            <time class="conversa-horario" datetime="2025-10-25T13:15">13:15</time>
+                        </header>
+                        <div class="conversa-preview">
+                            <p class="ultima-mensagem">
+                                <strong>Carlos:</strong> Alguém tem as anotações?
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Conversa individual -->
+                <article class="conversa-item" role="listitem" tabindex="0" data-conversa-id="3">
+                    <figure class="conversa-avatar">
+                        <img src="https://i.pinimg.com/736x/95/70/63/957063ad2f2b902eb85edc919b0fdf23.jpg" alt="Avatar de Prof. Ana Costa">
+                    </figure>
+                    <div class="conversa-info">
+                        <header class="conversa-header">
+                            <h2 class="conversa-nome">Prof. Ana Costa</h2>
+                            <time class="conversa-horario" datetime="2025-10-25T11:45">11:45</time>
+                        </header>
+                        <div class="conversa-preview">
+                            <p class="ultima-mensagem">
+                                <span class="check-duplo">✓✓</span>
+                                Obrigado pela resposta!
+                            </p>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Grupo de estudos -->
+                <article class="conversa-item grupo" role="listitem" tabindex="0" data-conversa-id="4">
+                    <figure class="conversa-avatar">
+                        <img src="https://i.pinimg.com/736x/43/6c/b1/436cb1d17ffe11f22f45fadb2b79b331.jpg" alt="Avatar do grupo Estudos Web">
+                    </figure>
+                    <div class="conversa-info">
+                        <header class="conversa-header">
+                            <h2 class="conversa-nome">
+                                <span class="icon-grupo">👥</span>
+                                Estudos Web
+                            </h2>
+                            <time class="conversa-horario" datetime="2025-10-25T10:20">10:20</time>
+                        </header>
+                        <div class="conversa-preview">
+                            <p class="ultima-mensagem">
+                                <strong>Você:</strong> Vou compartilhar o material
+                            </p>
+                            <span class="badge-nao-lidas" aria-label="1 mensagem não lida">1</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Conversa com arquivo -->
+                <article class="conversa-item" role="listitem" tabindex="0" data-conversa-id="5">
+                    <figure class="conversa-avatar">
+                        <img src="https://i.pinimg.com/736x/0b/44/24/0b44244d0dadf5928e619ab64ee396c5.jpg" alt="Avatar de Pedro Oliveira">
+                    </figure>
+                    <div class="conversa-info">
+                        <header class="conversa-header">
+                            <h2 class="conversa-nome">Pedro Oliveira</h2>
+                            <time class="conversa-horario" datetime="2025-10-24T18:30">Ontem</time>
+                        </header>
+                        <div class="conversa-preview">
+                            <p class="ultima-mensagem">
+                                <span class="icon-arquivo">📎</span>
+                                trabalho_final.pdf
+                            </p>
+                        </div>
+                    </div>
+                </article>
+            </section>
+        </aside>
+
+        <!-- Área principal do chat -->
+        <section class="chat-principal" role="main">
+            <!-- Header do chat -->
+            <header class="chat-header">
+                <button class="btn-icon btn-voltar" aria-label="Voltar para conversas" title="Voltar">
+                    <span class="icon">←</span>
+                </button>
+                <div class="chat-info">
+                    <figure class="chat-avatar">
+                        <img src="https://i.pinimg.com/736x/19/06/bf/1906bfe74bee762673849fce012edbc4.jpg" alt="Avatar de Maria Santos">
+                    </figure>
+                    <div class="chat-detalhes">
+                        <h2 class="chat-nome">Maria Santos</h2>
+                        <p class="chat-status">online</p>
+                    </div>
+                </div>
+                <nav class="chat-actions" aria-label="Ações do chat">
+                    <button class="btn-icon" aria-label="Buscar mensagens" title="Buscar">
+                        <span class="icon">🔍</span>
+                    </button>
+                    <button class="btn-icon" aria-label="Mais opções" title="Menu">
+                        <span class="icon">⋮</span>
+                    </button>
+                </nav>
+            </header>
+
+            <!-- Área de mensagens -->
+            <article class="mensagens-area">
+                <!-- Data separator -->
+                <div class="data-separator">
+                    <time datetime="2025-10-25">Hoje</time>
+                </div>
+
+                <!-- Mensagem recebida -->
+                <div class="mensagem recebida">
+                    <figure class="mensagem-avatar">
+                        <img src="https://i.pinimg.com/736x/19/06/bf/1906bfe74bee762673849fce012edbc4.jpg" alt="Avatar de Maria Santos">
+                    </figure>
+                    <div class="mensagem-conteudo">
+                        <div class="mensagem-bubble">
+                            <p class="mensagem-texto">Oi João! Tudo bem?</p>
+                            <footer class="mensagem-footer">
+                                <time class="mensagem-horario" datetime="2025-10-25T14:25">14:25</time>
+                            </footer>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensagem recebida -->
+                <div class="mensagem recebida">
+                    <figure class="mensagem-avatar">
+                        <img src="https://i.pinimg.com/736x/19/06/bf/1906bfe74bee762673849fce012edbc4.jpg" alt="Avatar de Maria Santos">
+                    </figure>
+                    <div class="mensagem-conteudo">
+                        <div class="mensagem-bubble">
+                            <p class="mensagem-texto">Você viu o trabalho de Cálculo que o professor passou?</p>
+                            <footer class="mensagem-footer">
+                                <time class="mensagem-horario" datetime="2025-10-25T14:25">14:25</time>
+                            </footer>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensagem enviada -->
+                <div class="mensagem enviada">
+                    <div class="mensagem-conteudo">
+                        <div class="mensagem-bubble">
+                            <p class="mensagem-texto">Oi Maria! Tudo ótimo 😊</p>
+                            <footer class="mensagem-footer">
+                                <time class="mensagem-horario" datetime="2025-10-25T14:26">14:26</time>
+                                <span class="mensagem-status" aria-label="Mensagem lida">✓✓</span>
+                            </footer>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensagem enviada -->
+                <div class="mensagem enviada">
+                    <div class="mensagem-conteudo">
+                        <div class="mensagem-bubble">
+                            <p class="mensagem-texto">Vi sim! É para entregar sexta-feira né?</p>
+                            <footer class="mensagem-footer">
+                                <time class="mensagem-horario" datetime="2025-10-25T14:26">14:26</time>
+                                <span class="mensagem-status" aria-label="Mensagem lida">✓✓</span>
+                            </footer>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensagem recebida -->
+                <div class="mensagem recebida">
+                    <figure class="mensagem-avatar">
+                        <img src="https://i.pinimg.com/736x/19/06/bf/1906bfe74bee762673849fce012edbc4.jpg" alt="Avatar de Maria Santos">
+                    </figure>
+                    <div class="mensagem-conteudo">
+                        <div class="mensagem-bubble">
+                            <p class="mensagem-texto">Isso mesmo! Quer fazer junto?</p>
+                            <footer class="mensagem-footer">
+                                <time class="mensagem-horario" datetime="2025-10-25T14:27">14:27</time>
+                            </footer>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensagem com arquivo -->
+                <div class="mensagem recebida">
+                    <figure class="mensagem-avatar">
+                        <img src="https://i.pinimg.com/736x/19/06/bf/1906bfe74bee762673849fce012edbc4.jpg" alt="Avatar de Maria Santos">
+                    </figure>
+                    <div class="mensagem-conteudo">
+                        <div class="mensagem-bubble arquivo">
+                            <div class="arquivo-info">
+                                <span class="arquivo-icon">📄</span>
+                                <div class="arquivo-detalhes">
+                                    <p class="arquivo-nome">exercicios_calculo.pdf</p>
+                                    <p class="arquivo-tamanho">2.5 MB</p>
+                                </div>
+                                <button class="btn-download" aria-label="Baixar arquivo">⬇️</button>
+                            </div>
+                            <footer class="mensagem-footer">
+                                <time class="mensagem-horario" datetime="2025-10-25T14:28">14:28</time>
+                            </footer>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensagem enviada -->
+                <div class="mensagem enviada">
+                    <div class="mensagem-conteudo">
+                        <div class="mensagem-bubble">
+                            <p class="mensagem-texto">Boa ideia! Vamos fazer juntos 👍</p>
+                            <footer class="mensagem-footer">
+                                <time class="mensagem-horario" datetime="2025-10-25T14:30">14:30</time>
+                                <span class="mensagem-status enviando" aria-label="Enviando">⏱</span>
+                            </footer>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Indicador de digitação -->
+                <div class="mensagem recebida digitando">
+                    <figure class="mensagem-avatar">
+                        <img src="https://i.pinimg.com/736x/19/06/bf/1906bfe74bee762673849fce012edbc4.jpg" alt="Avatar de Maria Santos">
+                    </figure>
+                    <div class="mensagem-conteudo">
+                        <div class="mensagem-bubble">
+                            <div class="digitando-indicator">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Footer com input de mensagem -->
+            <footer class="chat-footer">
+                <form class="mensagem-form" action="#" method="post">
+                    <fieldset class="form-fieldset">
+                        <legend class="visually-hidden">Enviar mensagem</legend>
+                        
+                        <button type="button" class="btn-icon" aria-label="Emoji" title="Emoji">
+                            <span class="icon">😊</span>
+                        </button>
+                        
+                        <button type="button" class="btn-icon" aria-label="Anexar arquivo" title="Anexar">
+                            <span class="icon">📎</span>
+                        </button>
+                        
+                        <label for="mensagem-input" class="visually-hidden">Digite sua mensagem</label>
+                        <input 
+                            type="text" 
+                            id="mensagem-input" 
+                            class="mensagem-input" 
+                            placeholder="Digite uma mensagem"
+                            aria-label="Digite sua mensagem"
+                            autocomplete="off"
+                        >
+                        
+                        <button type="submit" class="btn-enviar" aria-label="Enviar mensagem">
+                            <span class="icon">📤</span>
+                        </button>
+                    </fieldset>
+                </form>
+            </footer>
+        </section>
+
+        <!-- Painel lateral de informações (opcional) -->
+        <aside class="info-sidebar" role="complementary" aria-label="Informações do contato">
+            <header class="info-header">
+                <button class="btn-fechar" aria-label="Fechar painel">✕</button>
+                <h2>Informações do contato</h2>
+            </header>
+
+            <section class="info-perfil">
+                <figure class="perfil-avatar">
+                    <img src="https://i.pinimg.com/736x/19/06/bf/1906bfe74bee762673849fce012edbc4.jpg" alt="Avatar de Maria Santos">
+                </figure>
+                <h3 class="perfil-nome">Maria Santos</h3>
+                <p class="perfil-status">Estudando para as provas 📚</p>
+            </section>
+
+            <section class="info-section">
+                <h3 class="section-titulo">Sobre</h3>
+                <dl class="info-lista">
+                    <dt>Email:</dt>
+                    <dd>maria.santos@edumania.com</dd>
+                    <dt>Curso:</dt>
+                    <dd>Engenharia de Software</dd>
+                    <dt>Turma:</dt>
+                    <dd>2025-A</dd>
+                </dl>
+            </section>
+
+            <section class="info-section">
+                <h3 class="section-titulo">Mídia, links e documentos</h3>
+                <div class="midia-grid">
+                    <figure class="midia-item">
+                        <img src="https://via.placeholder.com/100" alt="Imagem compartilhada">
+                    </figure>
+                    <figure class="midia-item">
+                        <img src="https://via.placeholder.com/100" alt="Imagem compartilhada">
+                    </figure>
+                    <figure class="midia-item">
+                        <img src="https://via.placeholder.com/100" alt="Imagem compartilhada">
+                    </figure>
+                </div>
+            </section>
+
+            <section class="info-section">
+                <h3 class="section-titulo">Grupos em comum</h3>
+                <ul class="grupos-lista">
+                    <li class="grupo-item">
+                        <figure class="grupo-avatar">
+                            <img src="https://via.placeholder.com/40" alt="Avatar do grupo">
+                        </figure>
+                        <span class="grupo-nome">Turma 2025</span>
+                    </li>
+                    <li class="grupo-item">
+                        <figure class="grupo-avatar">
+                            <img src="https://via.placeholder.com/40" alt="Avatar do grupo">
+                        </figure>
+                        <span class="grupo-nome">Estudos Web</span>
+                    </li>
+                </ul>
+            </section>
+        </aside>
+    </main>
+
+    <script src="js/mensagens.js"></script>
+</body>
+</html>
+
