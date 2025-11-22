@@ -16,5 +16,7 @@ object Database {
 
     fun initDB() {
         database = MongoClient.create(System.getenv("MONGODB_LOGIN")!!).getDatabase("edumania")
+
+
     }
 }

@@ -20,17 +20,17 @@ data class CourseClass(
     data class Task(
         val title: String,
         val description: String,
-        val creator: ULong,
+        val creator: Long,
         val dueDate: String,
         val weight: Float,
-        val notes: Pair<ULong, Float>
+        val notes: List<Pair<Long, Float>> = listOf()
     )
 
     @Serializable
     data class Resource(
         val title: String,
         val description: String,
-        val creator: ULong,
+        val creator: Long,
         val files: List<ByteArray>,
     )
 
@@ -38,8 +38,10 @@ data class CourseClass(
         ClassEntry(
             code,
             courses.query("publicId" eq coursePublicId).getOrNull()?.firstOrNull()?.name ?: "",
-            membersPublicIds.size
+            membersPublicIds.size,
+            publicId
         )
 
-    data class ClassEntry(val code: String, val courseName: String, val studentAmount: Int)
+    @Serializable
+    data class ClassEntry(val code: String, val courseName: String, val studentAmount: Int, val publicId: Long)
 }

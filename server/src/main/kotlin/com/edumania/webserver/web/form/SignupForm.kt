@@ -11,7 +11,7 @@ import kotlinx.serialization.json.JsonIgnoreUnknownKeys
 @JsonIgnoreUnknownKeys
 data class SignupForm(val firstName: String, val lastName: String, val email: String, val password: String) {
 
-    fun createUser() =
+    suspend fun createUser() =
         User(
             email,
             passwordHash(password),

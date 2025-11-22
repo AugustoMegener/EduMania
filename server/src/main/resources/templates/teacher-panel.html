@@ -36,8 +36,8 @@
                 </div>
                 <div class="user-info">
                     <span>👨‍🏫 Prof.</span>
-                    <span th:text="${firstName"></span>
-                    <span th:text="${lastName"></span>
+                    <span th:text="${firstName}"></span>
+                    <span th:text="${lastName}"></span>
                 </div>
             </div>
 
@@ -52,40 +52,30 @@
             <div class="tab-content active" id="tasks-tab">
                 <section class="card">
                     <h2>Criar Nova Tarefa</h2>
-                    <form class="form-container">
-                        <div class="form-group">
-                            <label class="form-label">Título da Tarefa</label>
-                            <input type="text" class="form-input" placeholder="Ex: Exercícios de Cálculo" required>
-                        </div>
-
+                    <form class="form-container" method="post" action="./new_task">
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Turma</label>
-                                <select class="form-select" required>
-                                    <option value="">Selecione uma turma</option>
-                                    <option value="3a">Turma</option>
-                                </select>
+                                <label class="form-label" for="title">Título da Tarefa</label>
+                                <input id="title" name="title" type="text" class="form-input" placeholder="Ex: Exercícios de Cálculo" required>
                             </div>
-
                             <div class="form-group">
-                                <label class="form-label">Data de Entrega</label>
-                                <input type="date" class="form-input" required>
+                                <label class="form-label" for="dueDate">Data de Entrega</label>
+                                <input id="dueDate" name="dueDate" type="date" class="form-input" required>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Descrição</label>
-                            <textarea class="form-textarea" rows="5" placeholder="Descreva a tarefa..." required></textarea>
+                            <label class="form-label" for="description">Descrição</label>
+                            <textarea id="description" name="description" class="form-textarea" rows="5" placeholder="Descreva a tarefa..." required></textarea>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Valor da Tarefa</label>
-                            <input type="number" class="form-input" placeholder="Ex: 10" min="0" max="100" required>
+                            <label class="form-label" for="weight">Valor da Tarefa</label>
+                            <input id="weight" name="weight" type="number" class="form-input" placeholder="Ex: 10" min="0" max="10" required>
                         </div>
 
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">Criar Tarefa</button>
-                            <button type="reset" class="btn btn-secondary">Limpar</button>
                         </div>
                     </form>
                 </section>
@@ -94,13 +84,12 @@
                 <section class="card">
                     <h2>Tarefas Recentes</h2>
                     <div class="items-list">
-                        <div class="item-card">
+                        <div class="item-card" th:each="task : ${tasks}">
                             <div class="item-header">
-                                <h3>Título</h3>
-                                <span class="badge">Turma</span>
+                                <h3 th:text="${task.title}"></h3>
                             </div>
-                            <p class="item-date">Vence em: <span>vencimento</span></p>
-                            <p class="item-desc">descrição</p>
+                            <p class="item-date">Vence em: <span th:text="${task.dueDate}"></span></p>
+                            <p class="item-desc" th:text="${task.description}"></p>
                             <div class="item-actions">
                                 <button class="btn btn-secondary btn-small">Editar</button>
                                 <button class="btn btn-secondary btn-small">Deletar</button>
@@ -114,19 +103,11 @@
             <div class="tab-content" id="materials-tab">
                 <section class="card">
                     <h2>Postar Novo Material</h2>
-                    <form class="form-container">
-
+                    <form class="form-container" method="post" action="./new_material">
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">Título do Material</label>
-                                <input type="text" class="form-input" placeholder="Ex: Aula sobre Fotossíntese" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" for="class">Turma</label>
-                                <select id="class" name="class" class="form-select" required>
-                                    <option value="">Selecione uma turma</option>
-                                    <option value="turma-id">Turma</option>
-                                </select>
+                                <label class="form-label" for="title">Título do Material</label>
+                                <input id="title" name="title" type="text" class="form-input" placeholder="Ex: Aula sobre Fotossíntese" required>
                             </div>
                         </div>
 
@@ -142,12 +123,11 @@
 
                         <div class="form-group">
                             <label class="form-label">Anexo</label>
-                            <input type="file" class="form-input" multiple>
+                            <input name="files" type="file" class="form-input" multiple>
                         </div>
 
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">Postar Material</button>
-                            <button type="reset" class="btn btn-secondary">Limpar</button>
                         </div>
                     </form>
                 </section>
@@ -192,7 +172,7 @@
                     <div class="classes-grid">
                         <div class="class-card">
                             <h3>Turma</h3>
-                            <p class="class-info">👥 <span th:text=""></span> alunos</p>
+                            <p class="class-info">👥 <!--<span th:text=""></span>*--> alunos</p>
                             <p class="class-info">📚 Curso</p>
                             <button class="btn btn-secondary">Gerenciar</button>
                         </div>

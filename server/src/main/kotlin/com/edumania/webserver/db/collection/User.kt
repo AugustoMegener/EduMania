@@ -1,8 +1,10 @@
 package com.edumania.webserver.db.collection
 
+import com.edumania.webserver.db.Database.users
 import com.edumania.webserver.db.Repository
 import com.edumania.webserver.eq
 import com.edumania.webserver.web.UserSession
+import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoCollection
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -21,7 +23,8 @@ data class User(
     var lastName: String,
     val kind: UserKind,
     val publicId: Long = Random.nextLong(),
-    var sessionTokens: List<String> = listOf()
+    var sessionTokens: List<String> = listOf(),
+    val resetPasswordOnNextLogin: Boolean = false
 ) {
     enum class UserKind {
         DIRECTOR, TEACHER, STUDENT
@@ -36,10 +39,13 @@ data class User(
         return publicId == other.publicId
     }
 
-    fun generateSessionToken() = UUID.randomUUID().toString().also { sessionTokens += it }
-    fun generateSession() = UserSession(publicId, generateSessionToken())
+    suspend fun generateSessionToken() = UUID.randomUUID().toString().also {
+        sessionTokens += it
+        users.updateOne("publicId" eq publicId, Updates.addToSet("sessionTokens", it))
+    }
+    suspend fun generateSession() = UserSession(publicId, generateSessionToken())
 
-    fun withNewSession() = this to generateSession()
+    suspend fun withNewSession() = this to generateSession()
 
     override fun hashCode() = email.hashCode()
 

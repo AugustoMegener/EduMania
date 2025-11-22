@@ -17,7 +17,7 @@
             </div>
 
             <nav class="sidebar-menu">
-                <a href="#logout" class="menu-item">🚪 Sair</a>
+                <a href="/logout" class="menu-item">🚪 Sair</a>
             </nav>
         </aside>
 
@@ -32,6 +32,10 @@
                 <div class="alert alert-danger" th:if="${error}">
                     <span th:text="#{${error}}"></span>
                 </div>
+                <div class="alert" th:if="${pwd}">
+                    <span>Senha temporária do novo usuário: </span>
+                    <span th:text="#{pwd}"></span>
+                </div>
                 <div class="user-info">
                     <span>Sr(a). <span th:text="${user.lastName}"></span></span>
                 </div>
@@ -40,7 +44,7 @@
             <!-- Tabs de Navegação -->
             <div class="tabs-container">
                 <button class="tab-btn active" data-tab="courses">📚 Cursos</button>
-                <button class="tab-btn" data-tab="classes">📚 Turmas</button>
+                <button class="tab-btn" data-tab="classes">📖 Turmas</button>
                 <button class="tab-btn" data-tab="teachers">👨‍🏫 Professores</button>
                 <button class="tab-btn" data-tab="students">👥 Alunos</button>
             </div>
@@ -114,7 +118,7 @@
                                     <td th:text="${course.workload}"></td>
                                     <td>
                                         <form method="post" action="/director/panel/course">
-                                            <input type="hidden" name="courseId" th:value="${course.publicId}">
+                                            <input type="hidden" name="publicId" th:value="${course.publicId}">
                                             <button id="edit"
                                                     name="action"
                                                     type="submit"
@@ -141,7 +145,7 @@
             <div class="tab-content" id="classes-tab">
                 <section class="card">
                     <h2>Criar Nova Turma</h2>
-                    <form class="form-container" method="post" action="director/panel/new_class">
+                    <form class="form-container" method="post" action="/director/panel/new_class">
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="code">Código da Turma</label>
@@ -154,14 +158,14 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label" for="course">Curso</label>
-                                <select name="course"
-                                       id="course"
+                                <label class="form-label" for="coursePublicId">Curso</label>
+                                <select name="coursePublicId"
+                                       id="coursePublicId"
                                        class="form-input"
                                        required>
                                     <option th:each="course : ${courses}"
                                             th:value="${course.publicId}"
-                                            th:text="${course.name">
+                                            th:text="${course.name}">
                                     </option>
                                 </select>
                             </div>
@@ -184,32 +188,51 @@
                                 <th>Turma</th>
                                 <th>Curso</th>
                                 <th>Alunos</th>
+                                <th>Adicionar</th>
                                 <th>Ações</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="class : ${classes}">
                                 <td th:text="${class.code}"></td>
-                                <td th:text="${class.code}"></td>
-                                <td>XX</td>
+                                <td th:text="${class.courseName}"></td>
+                                <td th:text="${class.studentAmount}"></td>
+                                <td>
+                                    <form method="post" action="/director/panel/add_user">
+                                        <label for="userPublicId"></label>
+                                        <select name="userPublicId"
+                                                id="userPublicId"
+                                                class="form-input"
+                                                required>
+                                            <option th:each="student : ${students}"
+                                                    th:value="${student.publicId}"
+                                                    th:text="${student.firstName}">
+                                            </option>
+                                            <option th:each="teacher : ${teachers}"
+                                                    th:value="${teacher.publicId}"
+                                                    th:text="${teacher.firstName}">
+                                            </option>
+                                        </select>
+                                    </form>
+                                </td>
                                 <td>
                                     <form method="post" action="/director/panel/class">
-                                    <input type="hidden" name="classId" th:value="${course.publicId}">
-                                    <button id="edit"
-                                            name="action"
-                                            type="submit"
-                                            value="EDIT"
-                                            class="btn btn-secondary btn-small">
-                                        Editar
-                                    </button>
-                                    <button id="delete"
-                                            name="action"
-                                            type="submit"
-                                            value="DELETE"
-                                            class="btn btn-secondary btn-small">
-                                        Deletar
-                                    </button>
-                                </form>
+                                        <input type="hidden" name="publicId" th:value="${class.publicId}">
+                                        <button id="edit"
+                                                name="action"
+                                                type="submit"
+                                                value="EDIT"
+                                                class="btn btn-secondary btn-small">
+                                            Editar
+                                        </button>
+                                        <button id="delete"
+                                                name="action"
+                                                type="submit"
+                                                value="DELETE"
+                                                class="btn btn-secondary btn-small">
+                                            Deletar
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                             </tbody>
@@ -222,7 +245,7 @@
             <div class="tab-content" id="teachers-tab">
                 <section class="card">
                     <h2>Adicionar Professor</h2>
-                    <form class="form-container">
+                    <form class="form-container" method="post" action="/director/panel/new_teacher">
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="firstName">Nome</label>
@@ -279,13 +302,32 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Nome</td>
-                                    <td>email@email.email</td>
+                                <tr th:each="teacher : ${teachers}">
+                                    <td>
+                                        <span th:text="${teacher.firstName}"></span>
+                                        <span> </span>
+                                        <span th:text="${teacher.lastName}"></span>
+                                    </td>
+                                    <td th:text="${teacher.email}"></td>
                                     <td>X</td>
                                     <td>
-                                        <button class="btn btn-secondary btn-small">Editar</button>
-                                        <button class="btn btn-secondary btn-small">Deletar</button>
+                                        <form method="post" action="/director/panel/teacher">
+                                            <input type="hidden" name="publicId" th:value="${teacher.publicId}">
+                                            <button id="edit"
+                                                    name="action"
+                                                    type="submit"
+                                                    value="EDIT"
+                                                    class="btn btn-secondary btn-small">
+                                                Editar
+                                            </button>
+                                            <button id="delete"
+                                                    name="action"
+                                                    type="submit"
+                                                    value="DELETE"
+                                                    class="btn btn-secondary btn-small">
+                                                Deletar
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             </tbody>
@@ -298,34 +340,21 @@
             <div class="tab-content" id="students-tab">
                 <section class="card">
                     <h2>Adicionar Aluno</h2>
-                    <form class="form-container">
+                    <form class="form-container" method="post" action="/director/panel/new_student">
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label" for="name">Nome Completo</label>
-                                <input id="name" name="name" type="text" class="form-input" placeholder="Ex: João Silva" required>
+                                <label class="form-label" for="firstName">Nome</label>
+                                <input id="firstName" name="firstName" type="text" class="form-input" placeholder="Ex: João" required>
                             </div>
-
                             <div class="form-group">
-                                <label class="form-label" aria-label="email">Email</label>
-                                <input id="email" name="email" type="email" class="form-input" placeholder="Ex: joao@aluno.com" required>
+                                <label class="form-label" for="lastName">Sobrenome</label>
+                                <input id="lastName" name="lastName" type="text" class="form-input" placeholder="Ex: Silva" required>
                             </div>
                         </div>
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">Matrícula</label>
-                                <input type="text" class="form-input" placeholder="Ex: 2024-001" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Turma</label>
-                                <select class="form-select" required>
-                                    <option value="">Selecione uma turma</option>
-                                    <option value="3a">3º Ano - A</option>
-                                    <option value="3b">3º Ano - B</option>
-                                    <option value="2a">2º Ano - A</option>
-                                </select>
-                            </div>
+                        <div class="form-group">
+                            <label class="form-label" aria-label="email">Email</label>
+                            <input id="email" name="email" type="email" class="form-input" placeholder="Ex: joao@aluno.com" required>
                         </div>
 
                         <div class="form-actions">
@@ -343,41 +372,36 @@
                             <thead>
                                 <tr>
                                     <th>Nome</th>
-                                    <th>Matrícula</th>
                                     <th>Email</th>
-                                    <th>Turma</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>João Silva</td>
-                                    <td>2024-001</td>
-                                    <td>joao@aluno.com</td>
-                                    <td>3º Ano - A</td>
+                                <tr th:each="student : ${students}">
                                     <td>
-                                        <button class="btn btn-secondary btn-small">Editar</button>
-                                        <button class="btn btn-secondary btn-small">Deletar</button>
+                                        <span th:text="${student.firstName}"></span>
+                                        <span> </span>
+                                        <span th:text="${student.lastName}"></span>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td>Maria Santos</td>
-                                    <td>2024-002</td>
-                                    <td>maria@aluno.com</td>
-                                    <td>3º Ano - B</td>
+                                    <td th:text="${student.email}"></td>
                                     <td>
-                                        <button class="btn btn-secondary btn-small">Editar</button>
-                                        <button class="btn btn-secondary btn-small">Deletar</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Pedro Costa</td>
-                                    <td>2024-003</td>
-                                    <td>pedro@aluno.com</td>
-                                    <td>2º Ano - A</td>
-                                    <td>
-                                        <button class="btn btn-secondary btn-small">Editar</button>
-                                        <button class="btn btn-secondary btn-small">Deletar</button>
+                                        <form method="post" action="/director/panel/student">
+                                            <input type="hidden" name="publicId" th:value="${student.publicId}">
+                                            <button id="edit"
+                                                    name="action"
+                                                    type="submit"
+                                                    value="EDIT"
+                                                    class="btn btn-secondary btn-small">
+                                                Editar
+                                            </button>
+                                            <button id="delete"
+                                                    name="action"
+                                                    type="submit"
+                                                    value="DELETE"
+                                                    class="btn btn-secondary btn-small">
+                                                Deletar
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             </tbody>

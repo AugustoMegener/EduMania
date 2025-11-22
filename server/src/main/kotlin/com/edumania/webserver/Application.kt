@@ -8,11 +8,15 @@ import com.edumania.webserver.db.collection.User
 import com.edumania.webserver.web.UserSession
 import com.edumania.webserver.web.form.ActionForm
 import com.edumania.webserver.web.form.ActionForm.Action.*
+import com.edumania.webserver.web.form.AddUserToClassForm
 import com.edumania.webserver.web.form.NewCourseForm
 import com.edumania.webserver.web.form.LoginForm
 import com.edumania.webserver.web.form.NewClassForm
+import com.edumania.webserver.web.form.NewTaskForm
+import com.edumania.webserver.web.form.NewUserForm
 import com.edumania.webserver.web.form.SignupForm
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.Updates
 import io.ktor.http.*
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
@@ -24,12 +28,14 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import io.ktor.server.thymeleaf.*
+import io.ktor.util.toMap
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import org.mindrot.jbcrypt.BCrypt
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
 import kotlin.onFailure
 
@@ -75,7 +81,7 @@ suspend fun Application.module() {
         staticResources("/static", "static")
 
         get("/") {
-            call.respond(ThymeleafContent("edu", mapOf("nome" to "Hello World")))
+            call.respond(ThymeleafContent("index", mapOf("nome" to "Hello World")))
         }
 
         get("/signup") {
@@ -109,7 +115,7 @@ suspend fun Application.module() {
             withSession(
                 { when(it.kind) {
                     User.UserKind.DIRECTOR -> call.respondRedirect("/director/panel")
-                    User.UserKind.TEACHER -> call.respondRedirect("/teacher/teacher")
+                    User.UserKind.TEACHER -> call.respondRedirect("/teacher/panel/0/")
                     User.UserKind.STUDENT -> call.respondRedirect("/student/dashboard")
                 } },
                 { call.respond(ThymeleafContent("login", mapOf())) }
@@ -124,9 +130,9 @@ suspend fun Application.module() {
                     when (val user = it.firstOrNull()) {
                         null -> call.respond(ThymeleafContent("login", mapOf("error" to "invalid_login")))
                         else -> {
-                            if (passwordHash(form.password) == user.passwordHash) {
+                            if (BCrypt.checkpw(form.password, user.passwordHash)) {
                                 call.sessions.set(user.generateSession())
-                                call.respondRedirect("/student/dashboard")
+                                call.respondRedirect("/login")
                             }
                             else call.respond(ThymeleafContent("login", mapOf("error" to "invalid_password")))
                         }
@@ -136,6 +142,8 @@ suspend fun Application.module() {
         }
 
         get("/logout") {
+            val session = call.sessions.get<UserSession>()
+            session?.let { users.updateOne("publicId" eq it.publicId, Updates.pull("sessionTokens", it.hash)) }
             call.sessions.clear<UserSession>()
             call.respondRedirect("/login")
         }
@@ -146,9 +154,52 @@ suspend fun Application.module() {
             }
         }
 
-        get("/teacher/panel") {
-            withSession(User.UserKind.TEACHER) {
-                call.respond(ThymeleafContent("teacher-panel", mapOf("user" to it)))
+
+        get("/teacher/panel/{classPublicId}/") {
+            withSession(User.UserKind.TEACHER) { user ->
+                call.parameters["classPublicId"]
+                    ?.toLongOrNull()
+                    ?.let { classes.query(("publicId" eq it) and ("membersPublicIds" eq user.publicId)) }
+                    ?.onSuccess { flow ->
+                        flow.firstOrNull()
+                            ?.let {
+                                call.respond(
+                                    ThymeleafContent(
+                                        "teacher-panel",
+                                        mapOf(
+                                            "classId" to call.parameters["classPublicId"],
+                                            "user" to user,
+                                            "tasks" to it.tasks,
+                                        )
+                                    )
+                                )
+                            }
+                            ?: run {
+                                classes.query("membersPublicIds" eq user.publicId)
+                                    .onSuccess { fl ->
+                                        fl.firstOrNull()?.let {
+                                            call.respondRedirect("/teacher/panel/${it.publicId}/")
+                                        } ?: run {
+                                            call.respondRedirect("/")
+                                        }
+                                    }
+                                    .onFailure { call.respond(HttpStatusCode.InternalServerError, it.message ?: "") }
+
+                            }
+                    }
+                    ?.onFailure { call.respond(HttpStatusCode.InternalServerError, it.message ?: "") }
+            }
+        }
+
+        post("/teacher/panel/{classPublicId}/new_task") {
+            withSession(User.UserKind.TEACHER) { user ->
+                (call.parameters["classPublicId"]?.toLongOrNull())?.let {
+                    classes.updateOne(
+                        "publicId" eq it,
+                        Updates.addToSet("tasks", call.formReceive<NewTaskForm>().createTask(user.publicId))
+                    )
+                    call.respondRedirect("/teacher/panel/${it}/")
+                }
             }
         }
 
@@ -160,17 +211,26 @@ suspend fun Application.module() {
                     ThymeleafContent(
                         "director-panel",
                         mapOf(
+                            "pwd" to call.queryParameters["pwd"],
                             "user" to user,
                             "courses" to coursesList,
                             "classes" to (
                                 classes.query(Filters.`in`("coursePublicId", coursesList.map { it.publicId }))
-                                    .getOrNull()?.toList() ?: listOf()
+                                    .getOrNull()?.toList()?.map { it.toEntry() } ?: listOf()
+                            ),
+                            "teachers" to (
+                                users.query("kind" eq User.UserKind.TEACHER).getOrNull()?.toList() ?: listOf()
+                            ),
+                            "students" to (
+                                users.query("kind" eq User.UserKind.STUDENT).getOrNull()?.toList() ?: listOf()
                             )
                         )
                     )
                 )
             }
         }
+
+
 
         post("/director/panel/new_course") {
             withSession(User.UserKind.DIRECTOR) { user ->
@@ -200,7 +260,7 @@ suspend fun Application.module() {
                 val form = call.formReceive<ActionForm>()
 
                 when (form.action) {
-                    EDIT -> call.respondRedirect("/director/panel")
+                    EDIT -> call.respondRedirect("/director/panel#courses")
                     DELETE -> {
                         courses.deleteOne("publicId" eq form.publicId)
                         classes.deleteMany("coursePublicId" eq form.publicId)
@@ -238,13 +298,98 @@ suspend fun Application.module() {
                 val form = call.formReceive<ActionForm>()
 
                 when (form.action) {
-                    EDIT -> call.respondRedirect("/director/panel")
+                    EDIT -> call.respondRedirect("/director/panel#classes")
                     DELETE -> {
-                        courses.deleteOne("publicId" eq form.publicId)
-                        classes.deleteMany("coursePublicId" eq form.publicId)
-                        call.respondRedirect("/director/panel")
+                        classes.deleteOne("publicId" eq form.publicId)
+                        call.respondRedirect("/director/panel#classes")
                     }
                 }
+            }
+        }
+
+        post("/director/panel/new_teacher") {
+            withSession(User.UserKind.DIRECTOR) { user ->
+                val form = call.formReceive<NewUserForm>()
+
+                users.query("email" eq form.email)
+                    .onSuccess { flow ->
+                        if (flow.firstOrNull() == null) {
+                            val (pwd, user) = form.createPasswordAndUser(User.UserKind.TEACHER)
+
+                            users.add(user).onSuccess {
+                                call.respondRedirect("/director/panel#teachers?pwd=${pwd}")
+                            }.onFailure {
+                                call.respond(HttpStatusCode.InternalServerError, it.message ?: "")
+                            }
+
+                        } else call.respond(
+                            ThymeleafContent("/director/panel#classes", mapOf("error" to "email_in_use"))
+                        )
+                    }
+                    .onFailure { call.respond(HttpStatusCode.InternalServerError, it.message ?: "") }
+            }
+        }
+
+        post("/director/panel/teacher") {
+            withSession(User.UserKind.DIRECTOR)  { user ->
+                val form = call.formReceive<ActionForm>()
+
+                when (form.action) {
+                    EDIT -> call.respondRedirect("/director/panel#teachers")
+                    DELETE -> {
+                        users.deleteOne("publicId" eq form.publicId)
+                        call.respondRedirect("/director/panel#teachers")
+                    }
+                }
+            }
+        }
+
+        post("/director/panel/new_student") {
+            withSession(User.UserKind.DIRECTOR) { user ->
+                val form = call.formReceive<NewUserForm>()
+
+                users.query("email" eq form.email)
+                    .onSuccess { flow ->
+                        if (flow.firstOrNull() == null) {
+                            val (pwd, user) = form.createPasswordAndUser(User.UserKind.STUDENT)
+
+                            users.add(user).onSuccess {
+                                call.respondRedirect("/director/panel#sudent?pwd=${pwd}")
+                            }.onFailure {
+                                call.respond(HttpStatusCode.InternalServerError, it.message ?: "")
+                            }
+
+                        } else call.respond(
+                            ThymeleafContent("/director/panel#classes", mapOf("error" to "email_in_use"))
+                        )
+                    }
+                    .onFailure { call.respond(HttpStatusCode.InternalServerError, it.message ?: "") }
+            }
+        }
+
+        post("/director/panel/student") {
+            withSession(User.UserKind.DIRECTOR)  { user ->
+                val form = call.formReceive<ActionForm>()
+
+                when (form.action) {
+                    EDIT -> call.respondRedirect("/director/panel#student")
+                    DELETE -> {
+                        users.deleteOne("publicId" eq form.publicId)
+                        call.respondRedirect("/director/panel#student")
+                    }
+                }
+            }
+        }
+
+        post("/director/panel/add_user") {
+            withSession(User.UserKind.DIRECTOR)  { user ->
+                val form = call.formReceive<AddUserToClassForm>()
+
+                classes.updateOne(
+                    "publicId" eq form.classPublicId,
+                    Updates.addToSet("membersPublicIds", form.userPublicId)
+                )
+                call.respondRedirect("/director/panel#class")
             }
         }
     }
