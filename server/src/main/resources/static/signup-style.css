@@ -1,0 +1,326 @@
+:root {
+    --primary-color: #4da6ff; /* Azul primário mais claro para dark mode */
+    --secondary-color: #4cd964; /* Verde secundário mais claro para dark mode */
+    --card-bg: #2c2c2c; /* Fundo do card escuro */
+    --body-bg: #1e1e1e; /* Fundo do corpo muito escuro */
+    --text-light: #f0f0f0; /* Texto claro */
+    --text-muted: #aaaaaa; /* Texto mudo claro */
+    --border-color: #444444; /* Borda escura */
+    --hover-color: #007bff; /* Azul original para hover */
+    --accent-color: #4cd964; /* Cor de destaque (verde) */
+    --input-bg: #3c3c3c; /* Fundo do input escuro */
+    --input-border: #555555; /* Borda do input escura */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--body-bg);
+    color: var(--text-light);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.login-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.background-decoration {
+    display: none; /* Removido para estilo flat */
+}
+
+.login-card {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 450px; /* Aumentado para acomodar mais campos */
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 50px 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.login-icon {
+    display: inline-block;
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.login-header h1 {
+    font-size: 32px;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.login-subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-light);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.form-input {
+    padding: 14px 40px 14px 16px;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    color: var(--text-light);
+    font-size: 14px;
+    font-family: 'Arial', sans-serif;
+    transition: all 0.3s ease;
+    /* Estilo para o select removido */
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: var(--input-bg);
+    box-shadow: 0 0 0 2px rgba(77, 166, 255, 0.25);
+}
+
+.form-icon {
+    position: absolute;
+    right: 14px;
+    top: 40px;
+    font-size: 18px;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.error-message {
+    color: #ff4d4d; /* Vermelho para erro */
+    background-color: #4d1e1e; /* Fundo sutil para o erro */
+    border: 1px solid #ff4d4d;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.btn-login-submit {
+    padding: 14px 24px;
+    background-color: var(--primary-color);
+    color: #1e1e1e;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin-top: 10px;
+}
+
+.btn-login-submit:hover {
+    background-color: var(--hover-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+    color: #ffffff;
+}
+
+.btn-login-submit:active {
+    transform: translateY(0);
+}
+
+.login-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    font-size: 12px;
+}
+
+.login-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.login-link:hover {
+    color: var(--hover-color);
+}
+
+.login-divider {
+    color: var(--border-color);
+}
+
+.login-decoration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.decoration-line {
+    flex: 1;
+    height: 1px;
+    background-color: var(--border-color);
+}
+
+.decoration-text {
+    color: var(--text-muted);
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 768px) {
+    .login-card {
+        max-width: 90%;
+        padding: 40px 30px;
+        margin: 20px;
+    }
+
+    .login-header h1 {
+        font-size: 26px;
+    }
+
+    .login-icon {
+        font-size: 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 20px;
+    }
+
+    .login-card {
+        max-width: 100%;
+        padding: 30px 20px;
+        border-width: 1px;
+    }
+
+    .login-header h1 {
+        font-size: 22px;
+    }
+
+    .login-icon {
+        font-size: 40px;
+        margin-bottom: 10px;
+    }
+
+    .login-subtitle {
+        font-size: 12px;
+    }
+
+    .form-label {
+        font-size: 11px;
+    }
+
+    .form-input {
+        padding: 12px 36px 12px 14px;
+        font-size: 13px;
+    }
+
+    .form-icon {
+        right: 12px;
+        top: 36px;
+        font-size: 16px;
+    }
+
+    .btn-login-submit {
+        padding: 12px 20px;
+        font-size: 13px;
+    }
+
+    .login-footer {
+        font-size: 11px;
+        gap: 8px;
+    }
+
+    .login-decoration {
+        gap: 10px;
+        font-size: 11px;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--body-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--hover-color);
+}
+
+.alert {
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin: 8px 0;
+    font-size: 14px;
+    border: 1px solid transparent;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}

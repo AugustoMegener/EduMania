@@ -4,7 +4,7 @@ import com.mongodb.kotlin.client.coroutine.MongoCollection
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import org.bson.conversions.Bson
 
-class Repository<T : Any>(private val collection: MongoCollection<T>) {
+open class Repository<T : Any>(private val collection: MongoCollection<T>) {
 
     suspend fun add(value: T) = collection.runCatching { insertOne(value) }
 
@@ -20,9 +20,4 @@ class Repository<T : Any>(private val collection: MongoCollection<T>) {
     suspend fun deleteMany(filter: Bson) = collection.runCatching { deleteMany(filter) }
 
     fun query(filter: Bson) = collection.runCatching { find(filter) }
-
-    companion object {
-        inline fun <reified T : Any> create(db: MongoDatabase, name: String) =
-            Repository(db.getCollection<T>(name))
-    }
 }

@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca - EduMania</title>
+    <link rel="stylesheet" href="/static/base.css">
+    <link rel="stylesheet" href="/static/library-style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #a0a9b8;
+            letter-spacing: 0.5px;
+        }
+
+        /* FILTROS */
+        .filters-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .filters-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filters-title::before {
+            content: '🔍';
+            font-size: 1.5rem;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-label {
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-input {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: #f9f9f9;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: #1e3a5f;
+            background: white;
+            box-shadow: 0 0 10px rgba(30, 58, 95, 0.1);
+        }
+
+        .filter-select {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background: white;
+            cursor: pointer;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #1e3a5f;
+            box-shadow: 0 0 10px rgba(30, 58, 95, 0.1);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .btn-search {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(30, 58, 95, 0.3);
+        }
+
+        .btn-search:active {
+            transform: translateY(0);
+        }
+
+        .btn-reset {
+            padding: 12px 20px;
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-reset:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
+        }
+
+        /* RESULTADO DA BUSCA */
+        .search-result {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .result-count {
+            font-weight: 700;
+            color: #4facfe;
+        }
+
+        /* GRID DE LIVROS */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        /* CARD DO LIVRO */
+        .book-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        /* CAPA DO LIVRO COM FIGURE */
+        .book-cover-figure {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 3/4;
+            margin: 0;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .book-cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%,
+transparent 50%),
+                linear-gradient(-135deg, rgba(0, 0, 0, 0.1) 0%, transparent
+50%);
+            pointer-events: none;
+        }
+
+        .book-cover-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .book-cover-title {
+            font-size: 1.4rem;
+            font-weight: 900;
+            line-height: 1.2;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            white-space: pre-line;
+            word-break: break-word;
+        }
+
+        /* FIGCAPTION */
+        .book-info {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .book-author {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+
+        .book-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .book-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #f0f0f0;
+            color: #1e3a5f;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .book-badge.genre {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1565c0;
+        }
+
+        .book-badge.year {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            color: #6a1b9a;
+        }
+
+        .book-badge.pages {
+            background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+            color: #00695c;
+        }
+
+        .book-details {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #1e3a5f;
+        }
+
+        .detail-value {
+            color: #666;
+        }
+
+        /* AVALIAÇÃO */
+        .book-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .stars {
+            display: flex;
+            gap: 3px;
+        }
+
+        .star {
+            font-size: 1.2rem;
+            color: #ffc107;
+        }
+
+        .star.empty {
+            color: #e0e0e0;
+        }
+
+        .rating-text {
+            font-weight: 700;
+            color: #1e3a5f;
+            font-size: 0.95rem;
+        }
+
+        /* MENSAGEM DE NENHUM RESULTADO */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0a9b8;
+        }
+
+        .no-results-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .no-results-text {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        /* GRADIENTES DAS CAPAS */
+        .gradient-1 { background: linear-gradient(135deg, #667eea 0%,
+#764ba2 100%); }
+        .gradient-2 { background: linear-gradient(135deg, #f093fb 0%,
+#f5576c 100%); }
+        .gradient-3 { background: linear-gradient(135deg, #4facfe 0%,
+#00f2fe 100%); }
+        .gradient-4 { background: linear-gradient(135deg, #43e97b 0%,
+#38f9d7 100%); }
+        .gradient-5 { background: linear-gradient(135deg, #fa709a 0%,
+#fee140 100%); }
+        .gradient-6 { background: linear-gradient(135deg, #30cfd0 0%,
+#330867 100%); }
+        .gradient-7 { background: linear-gradient(135deg, #a8edea 0%,
+#fed6e3 100%); }
+        .gradient-8 { background: linear-gradient(135deg, #ff9a56 0%,
+#ff6a88 100%); }
+        .gradient-9 { background: linear-gradient(135deg, #2e2e78 0%,
+#1e3a5f 100%); }
+        .gradient-10 { background: linear-gradient(135deg, #0093e9 0%,
+#80d0c7 100%); }
+        .gradient-11 { background: linear-gradient(135deg, #8ec5fc 0%,
+#e0c3fc 100%); }
+        .gradient-12 { background: linear-gradient(135deg, #f093fb 0%,
+#f5576c 100%); }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-buttons {
+                flex-direction: column;
+            }
+
+            .btn-search,
+            .btn-reset {
+                width: 100%;
+            }
+
+            .books-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr
+));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .books-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ANIMAÇÃO */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .book-card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .book-card:nth-child(1) { animation-delay: 0.1s; }
+        .book-card:nth-child(2) { animation-delay: 0.15s; }
+        .book-card:nth-child(3) { animation-delay: 0.2s; }
+        .book-card:nth-child(4) { animation-delay: 0.25s; }
+        .book-card:nth-child(5) { animation-delay: 0.3s; }
+        .book-card:nth-child(6) { animation-delay: 0.35s; }
+        .book-card:nth-child(7) { animation-delay: 0.4s; }
+        .book-card:nth-child(8) { animation-delay: 0.45s; }
+        .book-card:nth-child(9) { animation-delay: 0.5s; }
+        .book-card:nth-child(10) { animation-delay: 0.55s; }
+        .book-card:nth-child(11) { animation-delay: 0.6s; }
+        .book-card:nth-child(12) { animation-delay: 0.65s; }
+    </style>
+</head>
+<body>
+    <div class="main-content" style="max-width: 1200px; margin: auto;">
+        <!-- HEADER -->
+        <div class="header">
+            <h1> BIBLIOTECA DE TI</h1>
+            <p>Acervo de Livros sobre Tecnologia da Informação</p>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="card filters-section">
+            <div class="filters-title">Filtrar Livros</div>
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Título</label>
+                    <input type="text" id="filterTitle" class="form-input"
+placeholder="Digite o título...">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Autor</label>
+                    <input type="text" id="filterAuthor" class=
+"filter-input" placeholder="Digite o autor...">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Gênero</label>
+                    <select id="filterGenre" class="form-select">
+                        <option value="">Todos os Gêneros</option>
+                        <option value="Programação">Programação</option>
+                        <option value="Web Development">Web Development</
+option>
+                        <option value="Banco de Dados">Banco de Dados</
+option>
+                        <option value="Algoritmos">Algoritmos</option>
+                        <option value="Segurança">Segurança</option>
+                        <option value="DevOps">DevOps</option>
+                        <option value="Machine Learning">Machine Learning</
+option>
+                        <option value="Cloud Computing">Cloud Computing</
+option>
+                    </select>
+                </div>
+                <div class="filter-buttons">
+                    <button class="btn btn-primary" onclick="filterBooks()">
+Buscar</button>
+                    <button class="btn btn-secondary" onclick="resetFilters()">
+Limpar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTADO DA BUSCA -->
+        <div class="search-result">
+            Exibindo <span class="result-count" id="resultCount">12</span>
+livros
+        </div>
+
+        <!-- GRID DE LIVROS -->
+        <div class="books-grid" id="booksGrid">
+            <!-- Livros serão inseridos aqui -->
+        </div>
+    </div>
+
+    <script>
+        // Base de dados de livros de TI
+        const books = /*[
+            {
+                id: 1,
+                title: "Python para Análise de Dados",
+                author: "Wes McKinney",
+                genre: "Programação",
+                year: 2012,
+                pages: 622,
+                rating: 4.8,
+                coverText: "PYTHON\nDATA\nANALYSIS",
+                gradient: "gradient-1"
+            },
+            {
+                id: 2,
+                title: "JavaScript: O Guia Definitivo",
+                author: "David Flanagan",
+                genre: "Web Development",
+                year: 2020,
+                pages: 1096,
+                rating: 4.9,
+                coverText: "JAVASCRIPT\nDEFINITIVO",
+                gradient: "gradient-2"
+            },
+            {
+                id: 3,
+                title: "Estrutura de Dados com C",
+                author: "Bhargava & Aditya",
+                genre: "Algoritmos",
+                year: 2016,
+                pages: 476,
+                rating: 4.7,
+                coverText: "ESTRUTURA\nDE\nDADOS",
+                gradient: "gradient-3"
+            },
+            {
+                id: 4,
+                title: "SQL Avançado para Profissionais",
+                author: "Itzik Ben-Gan",
+                genre: "Banco de Dados",
+                year: 2015,
+                pages: 880,
+                rating: 4.8,
+                coverText: "SQL\nAVANÇADO",
+                gradient: "gradient-4"
+            },
+            {
+                id: 5,
+                title: "Segurança em Aplicações Web",
+                author: "Andrew Hoffman",
+                genre: "Segurança",
+                year: 2018,
+                pages: 512,
+                rating: 4.6,
+                coverText: "SEGURANÇA\nWEB",
+                gradient: "gradient-5"
+            },
+            {
+                id: 6,
+                title: "Docker: Containerização Prática",
+                author: "Nigel Poulton",
+                genre: "DevOps",
+                year: 2019,
+                pages: 448,
+                rating: 4.7,
+                coverText: "DOCKER\nCONTAINERS",
+                gradient: "gradient-6"
+            },
+            {
+                id: 7,
+                title: "Machine Learning com TensorFlow",
+                author: "Aurélien Géron",
+                genre: "Machine Learning",
+                year: 2019,
+                pages: 1000,
+                rating: 4.8,
+                coverText: "MACHINE\nLEARNING",
+                gradient: "gradient-7"
+            },
+            {
+                id: 8,
+                title: "Kubernetes em Produção",
+                author: "Kelsey Hightower",
+                genre: "Cloud Computing",
+                year: 2017,
+                pages: 368,
+                rating: 4.6,
+                coverText: "KUBERNETES\nPRODUÇÃO",
+                gradient: "gradient-8"
+            },
+            {
+                id: 9,
+                title: "React: Desenvolvimento Moderno",
+                author: "Robin Wieruch",
+                genre: "Web Development",
+                year: 2021,
+                pages: 544,
+                rating: 4.7,
+                coverText: "REACT\nMODERNO",
+                gradient: "gradient-9"
+            },
+            {
+                id: 10,
+                title: "AWS: Serviços em Nuvem",
+                author: "Stephane Maarek",
+                genre: "Cloud Computing",
+                year: 2020,
+                pages: 720,
+                rating: 4.8,
+                coverText: "AWS\nCLOUD",
+                gradient: "gradient-10"
+            },
+            {
+                id: 11,
+                title: "Padrões de Design em Java",
+                author: "Gang of Four",
+                genre: "Programação",
+                year: 2002,
+                pages: 416,
+                rating: 4.9,
+                coverText: "DESIGN\nPATTERNS",
+                gradient: "gradient-11"
+            },
+            {
+                id: 12,
+                title: "Git: Controle de Versão",
+                author: "Scott Chacon",
+                genre: "DevOps",
+                year: 2014,
+                pages: 456,
+                rating: 4.7,
+                coverText: "GIT\nVERSÃO",
+                gradient: "gradient-12"
+            }
+        ];*/
+
+        // Função para renderizar livros
+        function renderBooks(filteredBooks = books) {
+            const grid = document.getElementById('booksGrid');
+            const resultCount = document.getElementById('resultCount');
+
+            resultCount.textContent = filteredBooks.length;
+
+            if (filteredBooks.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">📭</div>
+                        <div class="no-results-text">Nenhum livro
+encontrado</div>
+                        <p>Tente ajustar seus filtros de busca</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredBooks.map(book => `
+                <div class="card book-card">
+                    <figure class="book-cover-figure">
+                        <div class="book-cover ${book.gradient}">
+                            <div class="book-cover-content">
+                                <div class="book-cover-title">${book.
+coverText}</div>
+                            </div>
+                        </div>
+                        <figcaption class="book-info">
+                            <h3 class="book-title">${book.title}</h3>
+                            <p class="book-author">por ${book.author}</p>
+
+                            <div class="book-meta">
+                                <span class="book-badge genre">${book.genre}
+</span>
+                                <span class="book-badge year">${book.year}
+</span>
+                                <span class="book-badge pages">${book.pages}
+pgs</span>
+                            </div>
+
+                            <div class="book-details">
+                                <div class="detail-row">
+                                    <span
+class="detail-label">Publicado:</span>
+                                    <span class="detail-value">${book.year}
+</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span
+class="detail-label">Páginas:</span>
+                                    <span class="detail-value">${book.pages}
+</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span
+class="detail-label">Gênero:</span>
+                                    <span class="detail-value">${book.genre}
+</span>
+                                </div>
+                            </div>
+
+                            <div class="book-rating">
+                                <div class="stars">
+                                    ${Array(5).fill(0).map((_, i) => `
+                                        <span class="star ${i < Math.floor(
+book.rating) ? '' : 'empty'}">★</span>
+                                    `).join('')}
+                                </div>
+                                <span class="rating-text">${book.rating}
+</span>
+                            </div>
+                        </figcaption>
+                    </figure>
+                </div>
+            `).join('');
+        }
+
+        // Função para filtrar livros
+        function filterBooks() {
+            const titleFilter = document.getElementById('filterTitle').value
+.toLowerCase();
+            const authorFilter = document.getElementById('filterAuthor').
+value.toLowerCase();
+            const genreFilter = document.getElementById('filterGenre').value
+;
+
+            const filtered = books.filter(book => {
+                const titleMatch = book.title.toLowerCase().includes(
+titleFilter);
+                const authorMatch = book.author.toLowerCase().includes(
+authorFilter);
+                const genreMatch = !genreFilter || book.genre ===
+genreFilter;
+
+                return titleMatch && authorMatch && genreMatch;
+            });
+
+            renderBooks(filtered);
+        }
+
+        // Função para limpar filtros
+        function resetFilters() {
+            document.getElementById('filterTitle').value = '';
+            document.getElementById('filterAuthor').value = '';
+            document.getElementById('filterGenre').value = '';
+            renderBooks();
+        }
+
+        // Event listeners para filtros em tempo real
+        document.getElementById('filterTitle').addEventListener('keyup',
+filterBooks);
+        document.getElementById('filterAuthor').addEventListener('keyup',
+filterBooks);
+        document.getElementById('filterGenre').addEventListener('change',
+filterBooks);
+
+        // Renderizar livros ao carregar
+        renderBooks();
+    </script>
+</body>
+</html>

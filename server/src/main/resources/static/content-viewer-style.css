@@ -1,0 +1,341 @@
+/* Estilos para content-viewer.html */
+
+.content-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.content-header h1 {
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+.content-header .subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Filtros e Busca */
+.filters-card {
+    margin-bottom: 30px;
+}
+
+.search-bar {
+    margin-bottom: 15px;
+}
+
+.search-bar input {
+    width: 100%;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-buttons .btn {
+    padding: 8px 15px;
+    font-size: 0.85rem;
+}
+
+/* Seções de Conteúdo */
+.content-section {
+    margin-bottom: 40px;
+}
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.section-title h2 {
+    margin: 0;
+}
+
+.count-badge {
+    background: var(--input-bg);
+    color: var(--text-muted);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+}
+
+/* Grid de Conteúdo */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Cards de Material */
+.content-card {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-card:hover {
+    background: var(--body-bg);
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px var(--shadow-color);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: var(--body-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-icon {
+    font-size: 2rem;
+}
+
+.card-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.card-type {
+    background: var(--primary-color);
+    color: var(--body-bg);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    width: fit-content;
+}
+
+.card-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.card-content {
+    padding: 15px;
+    flex: 1;
+}
+
+.card-content h3 {
+    margin: 0 0 8px 0;
+    font-size: 1rem;
+    color: var(--primary-color);
+}
+
+.card-description {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.card-stats {
+    display: flex;
+    gap: 15px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.card-actions {
+    display: flex;
+    gap: 8px;
+    padding: 12px 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+.card-actions .btn {
+    flex: 1;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+}
+
+/* Lista de Tarefas */
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.task-card {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid #ffc36b;
+    border-radius: 6px;
+    padding: 15px;
+    transition: all 0.2s ease;
+}
+
+.task-card:hover {
+    background: var(--body-bg);
+}
+
+.task-card.completed {
+    border-left-color: var(--secondary-color);
+    opacity: 0.8;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 15px;
+}
+
+.task-title-section h3 {
+    margin: 0 0 5px 0;
+    color: var(--primary-color);
+}
+
+.task-title-section .task-description {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.task-status {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.task-status.pending {
+    background: #ffc36b;
+    color: var(--body-bg);
+}
+
+.task-status.completed {
+    background: var(--secondary-color);
+    color: var(--body-bg);
+}
+
+.task-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.detail-item {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.task-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.task-actions .btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+/* Lista de Avisos */
+.announcements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.announcement-card {
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--primary-color);
+    border-radius: 6px;
+    padding: 15px;
+    transition: all 0.2s ease;
+}
+
+.announcement-card:hover {
+    background: var(--body-bg);
+}
+
+.announcement-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.announcement-header h3 {
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.announcement-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.announcement-content {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+    .content-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    .section-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .filter-buttons {
+        justify-content: flex-start;
+    }
+
+    .task-header {
+        flex-direction: column;
+    }
+
+    .task-status {
+        align-self: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card-actions {
+        flex-direction: column;
+    }
+
+    .card-actions .btn {
+        width: 100%;
+    }
+
+    .task-actions {
+        flex-direction: column;
+    }
+
+    .task-actions .btn {
+        width: 100%;
+    }
+}

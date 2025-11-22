@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Conta - EduMania - Plataforma de Estudos</title>
+    <link rel="stylesheet" href="/static/signup-style.css">
+    <script src="/static/script-signup.js" defer></script>
+</head>
+<body>
+
+    <div class="login-container" style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+        <!-- Decoração de fundo removida para estilo flat -->
+        <div class="background-decoration">
+        </div>
+
+        <!-- Card de Criação de Conta -->
+        <div class="card" style="max-width: 400px;">
+            <!-- Cabeçalho do Card -->
+            <div class="login-header">
+                <div class="login-icon">🎓</div>
+                <h1>Crie sua Conta</h1>
+                <p class="login-subtitle">Comece sua jornada de conhecimento</p>
+            </div>
+
+            <!-- Formulário de Criação de Conta -->
+            <form class="login-form" action="/signup" method="POST">
+
+                <div class="form-group">
+                    <label for="first_name" class="form-label">Nome</label>
+                    <input
+                            type="text"
+                            id="first_name"
+                            name="firstName"
+                            class="form-input"
+                            placeholder="Fulano"
+                            required
+                    >
+                    <span class="form-icon"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="last_name" class="form-label">Sobrenome</label>
+                    <input
+                            type="text"
+                            id="last_name"
+                            name="lastName"
+                            class="form-input"
+                            placeholder="de Tal"
+                            required
+                    >
+                    <span class="form-icon"></span>
+                </div>
+
+                <!-- Campo de Email -->
+                <div class="form-group">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="seu.email@exemplo.com"
+                        required
+                    >
+                    <span class="form-icon">📧</span>
+                </div>
+
+                <!-- Campo de Senha -->
+                <div class="form-group">
+                    <label for="password" class="form-label">Senha</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Crie uma senha segura"
+                        required
+                    >
+                    <span class="form-icon">🔐</span>
+                </div>
+
+                <!-- Campo de Repetição de Senha -->
+                <div class="form-group">
+                    <label for="confirm-password" class="form-label">Repetir Senha</label>
+                    <input 
+                        type="password" 
+                        id="confirm-password" 
+                        name="confirm-password" 
+                        class="form-input" 
+                        placeholder="Repita a senha"
+                        required
+                    >
+                    <span class="form-icon">🔐</span>
+                </div>
+
+
+
+                <!-- Mensagem de Erro de Senha -->
+                <div id="password-match-error" class="error-message" style="display: none;">
+                    As senhas não coincidem. Por favor, verifique.
+                </div>
+
+                <!-- Botão de Criação de Conta -->
+                <button type="submit" class="btn-login-submit">Criar Conta</button>
+
+                <div class="alert alert-danger" th:if="${error}">
+                    <span th:text="#{${error}}"></span>
+                </div>
+            </form>
+
+            <!-- Links Adicionais -->
+            <div class="card-footer">
+                <a href="login.html" class="login-link">Já tem uma conta? Faça Login</a>
+            </div>
+
+            <!-- Decoração inferior -->
+            <div class="login-decoration">
+                <span class="decoration-line"></span>
+                <span class="decoration-text">📚 EduMania 📚</span>
+                <span class="decoration-line"></span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

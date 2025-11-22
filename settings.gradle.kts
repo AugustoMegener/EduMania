@@ -1,3 +1,6 @@
+import org.gradle.kotlin.dsl.maven
+import org.gradle.kotlin.dsl.repositories
+
 rootProject.name = "EduMania"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 

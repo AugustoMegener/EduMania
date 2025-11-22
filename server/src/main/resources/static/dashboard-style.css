@@ -1,0 +1,260 @@
+/* Estilos específicos para dashboard.html */
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dashboard-header h1 {
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+.dashboard-header .subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.user-info {
+    background: var(--input-bg);
+    padding: 10px 15px;
+    border-radius: 6px;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+/* Seção de Agenda */
+.agenda-section {
+    grid-column: 1 / -1;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.section-header h2 {
+    margin: 0;
+}
+
+.link-small {
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.link-small:hover {
+    color: var(--hover-color);
+}
+
+.agenda-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.agenda-item {
+    display: flex;
+    gap: 15px;
+    padding: 12px;
+    background: var(--input-bg);
+    border-radius: 6px;
+    border-left: 4px solid var(--primary-color);
+    transition: background-color 0.2s ease;
+}
+
+.agenda-item:hover {
+    background: var(--body-bg);
+}
+
+.agenda-time {
+    font-weight: 700;
+    color: var(--primary-color);
+    min-width: 50px;
+}
+
+.agenda-content {
+    flex: 1;
+}
+
+.agenda-title {
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 3px;
+}
+
+.agenda-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Seção de Tarefas */
+.tasks-section {
+    grid-column: 1 / -1;
+}
+
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.task-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: var(--input-bg);
+    border-radius: 6px;
+    border-left: 4px solid var(--accent-color);
+    transition: background-color 0.2s ease;
+}
+
+.task-item.pending {
+    border-left-color: #ffc36b;
+}
+
+.task-item.completed {
+    border-left-color: var(--secondary-color);
+    opacity: 0.7;
+}
+
+.task-item:hover {
+    background: var(--body-bg);
+}
+
+.task-status {
+    font-size: 1.2rem;
+    min-width: 30px;
+    text-align: center;
+}
+
+.task-content {
+    flex: 1;
+}
+
+.task-title {
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 3px;
+}
+
+.task-date {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Seção de Atalhos */
+.shortcuts-section {
+    grid-column: 1 / -1;
+}
+
+.shortcuts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 15px;
+}
+
+.shortcut-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 20px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-light);
+    transition: all 0.3s ease;
+}
+
+.shortcut-btn:hover {
+    background: var(--primary-color);
+    color: var(--body-bg);
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+.shortcut-icon {
+    font-size: 2rem;
+}
+
+.shortcut-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Seção de Desempenho */
+.performance-section {
+    grid-column: 1 / -1;
+}
+
+.performance-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    background: var(--input-bg);
+    border-radius: 6px;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .agenda-section,
+    .tasks-section,
+    .shortcuts-section,
+    .performance-section {
+        grid-column: 1;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .user-info {
+        align-self: flex-start;
+    }
+}

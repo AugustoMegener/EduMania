@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Diretor - EduMania</title>
+    <link rel="stylesheet" href="/static/base.css">
+    <link rel="stylesheet" href="/static/panel-style.css">
+    <link rel="stylesheet" href="/static/director-style.css">
+</head>
+<body>
+    <div class="layout-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>EduMania</h2>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="#logout" class="menu-item">🚪 Sair</a>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Cabeçalho -->
+            <div class="panel-header">
+                <div>
+                    <h1>Painel do Diretor</h1>
+                    <p class="subtitle">Gerencie a instituição</p>
+                </div>
+                <div class="alert alert-danger" th:if="${error}">
+                    <span th:text="#{${error}}"></span>
+                </div>
+                <div class="user-info">
+                    <span>Sr(a). <span th:text="${user.lastName}"></span></span>
+                </div>
+            </div>
+
+            <!-- Tabs de Navegação -->
+            <div class="tabs-container">
+                <button class="tab-btn active" data-tab="courses">📚 Cursos</button>
+                <button class="tab-btn" data-tab="classes">📚 Turmas</button>
+                <button class="tab-btn" data-tab="teachers">👨‍🏫 Professores</button>
+                <button class="tab-btn" data-tab="students">👥 Alunos</button>
+            </div>
+
+            <!-- Tab 1: Cursos -->
+            <div class="tab-content active" id="courses-tab">
+                <section class="card">
+                    <h2>Criar Novo Curso</h2>
+                    <form class="form-container" action="/director/panel/new_course" method="post">
+                        <div class="form-group">
+                            <label class="form-label" for="name">Nome do Curso</label>
+                            <input id="name"
+                                   name="name"
+                                   type="text"
+                                   class="form-input"
+                                   placeholder="Ex: Programação Web"
+                                   required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="code">Código do Curso</label>
+                                <input id="code"
+                                       name="code"
+                                       type="text"
+                                       class="form-input"
+                                       placeholder="Ex: PROG" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="workload">Carga Horária</label>
+                                <input id="workload" name="workload" type="number" class="form-input" placeholder="Ex: 60" min="0" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="description">Descrição</label>
+                            <textarea id="description"
+                                      name="description"
+                                      class="form-textarea"
+                                      rows="4"
+                                      placeholder="Descreva o curso..."
+                                      required>
+                            </textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Criar Curso</button>
+                            <button type="reset" class="btn btn-secondary">Limpar</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Lista de Cursos -->
+                <section class="card">
+                    <h2>Cursos Cadastrados</h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Curso</th>
+                                    <th>Código</th>
+                                    <th>Carga Horária</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="course : ${courses}">
+                                    <td th:text="${course.name}"></td>
+                                    <td th:text="${course.code}"></td>
+                                    <td th:text="${course.workload}"></td>
+                                    <td>
+                                        <form method="post" action="/director/panel/course">
+                                            <input type="hidden" name="courseId" th:value="${course.publicId}">
+                                            <button id="edit"
+                                                    name="action"
+                                                    type="submit"
+                                                    value="EDIT"
+                                                    class="btn btn-secondary btn-small">
+                                                Editar
+                                            </button>
+                                            <button id="delete"
+                                                    name="action"
+                                                    type="submit"
+                                                    value="DELETE"
+                                                    class="btn btn-secondary btn-small">
+                                                Deletar
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <div class="tab-content" id="classes-tab">
+                <section class="card">
+                    <h2>Criar Nova Turma</h2>
+                    <form class="form-container" method="post" action="director/panel/new_class">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="code">Código da Turma</label>
+                                <input name="code"
+                                       id="code"
+                                       type="text"
+                                       class="form-input"
+                                       placeholder="Ex: PROG5051"
+                                       required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="course">Curso</label>
+                                <select name="course"
+                                       id="course"
+                                       class="form-input"
+                                       required>
+                                    <option th:each="course : ${courses}"
+                                            th:value="${course.publicId}"
+                                            th:text="${course.name">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Criar Turma</button>
+                            <button type="reset" class="btn btn-secondary">Limpar</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Lista de Cursos -->
+                <section class="card">
+                    <h2>Turmas Cadastradas</h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                            <tr>
+                                <th>Turma</th>
+                                <th>Curso</th>
+                                <th>Alunos</th>
+                                <th>Ações</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="class : ${classes}">
+                                <td th:text="${class.code}"></td>
+                                <td th:text="${class.code}"></td>
+                                <td>XX</td>
+                                <td>
+                                    <form method="post" action="/director/panel/class">
+                                    <input type="hidden" name="classId" th:value="${course.publicId}">
+                                    <button id="edit"
+                                            name="action"
+                                            type="submit"
+                                            value="EDIT"
+                                            class="btn btn-secondary btn-small">
+                                        Editar
+                                    </button>
+                                    <button id="delete"
+                                            name="action"
+                                            type="submit"
+                                            value="DELETE"
+                                            class="btn btn-secondary btn-small">
+                                        Deletar
+                                    </button>
+                                </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Tab 2: Professores -->
+            <div class="tab-content" id="teachers-tab">
+                <section class="card">
+                    <h2>Adicionar Professor</h2>
+                    <form class="form-container">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="firstName">Nome</label>
+                                <input id="firstName"
+                                       name="firstName"
+                                       type="text"
+                                       class="form-input"
+                                       placeholder="Ex: Pedro"
+                                       required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="lastName">Sobrenome</label>
+                                <input id="lastName"
+                                       name="lastName"
+                                       type="text"
+                                       class="form-input"
+                                       placeholder="Ex: Silva"
+                                       required>
+                            </div>
+
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="email">Email</label>
+                                <input id="email"
+                                       name="email"
+                                       type="email"
+                                       class="form-input"
+                                       placeholder="Ex: pedro@escola.com"
+                                       required>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Adicionar Professor</button>
+                            <button type="reset" class="btn btn-secondary">Limpar</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Lista de Professores -->
+                <section class="card">
+                    <h2>Professores Cadastrados</h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Turmas</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Nome</td>
+                                    <td>email@email.email</td>
+                                    <td>X</td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Editar</button>
+                                        <button class="btn btn-secondary btn-small">Deletar</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Tab 3: Alunos -->
+            <div class="tab-content" id="students-tab">
+                <section class="card">
+                    <h2>Adicionar Aluno</h2>
+                    <form class="form-container">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="name">Nome Completo</label>
+                                <input id="name" name="name" type="text" class="form-input" placeholder="Ex: João Silva" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" aria-label="email">Email</label>
+                                <input id="email" name="email" type="email" class="form-input" placeholder="Ex: joao@aluno.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Matrícula</label>
+                                <input type="text" class="form-input" placeholder="Ex: 2024-001" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Turma</label>
+                                <select class="form-select" required>
+                                    <option value="">Selecione uma turma</option>
+                                    <option value="3a">3º Ano - A</option>
+                                    <option value="3b">3º Ano - B</option>
+                                    <option value="2a">2º Ano - A</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Adicionar Aluno</button>
+                            <button type="reset" class="btn btn-secondary">Limpar</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Lista de Alunos -->
+                <section class="card">
+                    <h2>Alunos Cadastrados</h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Matrícula</th>
+                                    <th>Email</th>
+                                    <th>Turma</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>João Silva</td>
+                                    <td>2024-001</td>
+                                    <td>joao@aluno.com</td>
+                                    <td>3º Ano - A</td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Editar</button>
+                                        <button class="btn btn-secondary btn-small">Deletar</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Maria Santos</td>
+                                    <td>2024-002</td>
+                                    <td>maria@aluno.com</td>
+                                    <td>3º Ano - B</td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Editar</button>
+                                        <button class="btn btn-secondary btn-small">Deletar</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Pedro Costa</td>
+                                    <td>2024-003</td>
+                                    <td>pedro@aluno.com</td>
+                                    <td>2º Ano - A</td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-small">Editar</button>
+                                        <button class="btn btn-secondary btn-small">Deletar</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Navegação entre tabs
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                
+                this.classList.add('active');
+                document.getElementById(tabName + '-tab').classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

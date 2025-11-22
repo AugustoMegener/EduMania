@@ -4,3 +4,13 @@ plugins {
     alias(libs.plugins.kotlinJvm) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
 }
+
+repositories {
+    maven {
+        url = uri("https://maven.pkg.github.com/InsertKoin/koin")
+        credentials {
+            username =  System.getenv("USERNAME_GITHUB")
+            password = System.getenv("TOKEN_GITHUB")
+        }
+    }
+}

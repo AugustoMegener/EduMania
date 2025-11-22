@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard do Aluno - EduMania</title>
+    <link rel="stylesheet" href="/static/base.css">
+    <link rel="stylesheet" href="/static/dashboard-style.css">
+</head>
+<body>
+    <div class="layout-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>EduMania</h2>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="/chat" class="menu-item">💬 Chat</a>
+                <a href="/library" class="menu-item">📚 Biblioteca</a>
+                <a href="/calendar" class="menu-item">📅 Calendário</a>
+                <a href="/logout" class="menu-item">🚪 Sair</a>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Cabeçalho com Saudação -->
+            <div class="dashboard-header">
+                <div>
+                    <h1>Bem-vindo, <span th:text="${user.firstName}"></span>>!</h1>
+                    <p class="subtitle">Aqui está seu resumo de hoje</p>
+                </div>
+                <div class="user-info">
+                    <span>👤</span>
+                    <span th:text="${user.firstName}"></span>
+                    <span> </span>
+                    <span th:text="${user.lastName}"></span>
+                </div>
+            </div>
+
+            <!-- Grid Principal -->
+            <div class="dashboard-grid">
+                <!-- Mini Agenda -->
+                <section class="card agenda-section">
+                    <div class="section-header">
+                        <h2>📅 Próximos Eventos</h2>
+                        <a href="/calendar" class="link-small">Ver tudo</a>
+                    </div>
+                    <div class="agenda-list">
+                        <div class="agenda-item">
+                            <div class="agenda-time">XXhXX</div>
+                            <div class="agenda-content">
+                                <div class="agenda-title">Título</div>
+                                <div class="agenda-subtitle">Subtitulo</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Tarefas Pendentes -->
+                <section class="card tasks-section">
+                    <div class="section-header">
+                        <h2>✅ Tarefas Pendentes</h2>
+                        <!--<a href="#tasks" class="link-small">Ver tudo</a>-->
+                    </div>
+                    <div class="tasks-list">
+                        <div class="task-item pending">
+                            <div class="task-status">⏳</div>
+                            <div class="task-content">
+                                <div class="task-title">Titulo</div>
+                                <div class="task-date">Prazo</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Desempenho -->
+                <section class="card performance-section">
+                    <h2>📊 Seu Desempenho</h2>
+                    <div class="performance-stats">
+                        <h3>Matéria</h3>
+                        <div class="stat-item">
+                            <div class="stat-label">Média Geral</div>
+                            <div class="stat-value">XX,X</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Presença</div>
+                            <div class="stat-value">XX%</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Tarefas Completas</div>
+                            <div class="stat-value">XX/XX</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+/* Estilos específicos para director-panel.html */
+
+.table-container {
+    overflow-x: auto;
+    margin-top: 15px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--input-bg);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.data-table thead {
+    background: var(--body-bg);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.data-table th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.data-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-light);
+}
+
+.data-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.data-table tbody tr:hover {
+    background: var(--body-bg);
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Responsividade para tabelas em mobile */
+@media (max-width: 768px) {
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .data-table {
+        font-size: 0.85rem;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 8px 10px;
+    }
+
+    .btn-small {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+}

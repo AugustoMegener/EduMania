@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Professor - EduMania</title>
+    <link rel="stylesheet" href="/static/base.css">
+    <link rel="stylesheet" href="/static/panel-style.css">
+</head>
+<body>
+    <div class="layout-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>EduMania</h2>
+            </div>
+
+            <nav class="sidebar-menu">
+                <!--<a href="#tasks" class="menu-item">✅ Tarefas</a>-->
+                <a href="/library" class="menu-item">📚 Biblioteca</a>
+                <a href="/calendar" class="menu-item">📅 Calendário</a>
+                <!--<a href="#classes" class="menu-item">👥 Turmas</a>-->
+                <!--<a href="#grades" class="menu-item">📊 Notas</a>-->
+                <a href="/chat" class="menu-item">💬 Chat</a>
+                <a href="/logout" class="menu-item">🚪 Sair</a>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <!-- Cabeçalho -->
+            <div class="panel-header">
+                <div>
+                    <h1>Painel do Professor</h1>
+                    <p class="subtitle">Gerencie suas aulas e tarefas</p>
+                </div>
+                <div class="user-info">
+                    <span>👨‍🏫 Prof.</span>
+                    <span th:text="${firstName"></span>
+                    <span th:text="${lastName"></span>
+                </div>
+            </div>
+
+            <!-- Tabs de Navegação -->
+            <div class="tabs-container">
+                <button class="tab-btn active" data-tab="tasks">✅ Criar Tarefa</button>
+                <button class="tab-btn" data-tab="materials">📚 Postar Material</button>
+                <button class="tab-btn" data-tab="manage">⚙️ Gerenciar</button>
+            </div>
+
+            <!-- Tab 1: Criar Tarefa -->
+            <div class="tab-content active" id="tasks-tab">
+                <section class="card">
+                    <h2>Criar Nova Tarefa</h2>
+                    <form class="form-container">
+                        <div class="form-group">
+                            <label class="form-label">Título da Tarefa</label>
+                            <input type="text" class="form-input" placeholder="Ex: Exercícios de Cálculo" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Turma</label>
+                                <select class="form-select" required>
+                                    <option value="">Selecione uma turma</option>
+                                    <option value="3a">Turma</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Data de Entrega</label>
+                                <input type="date" class="form-input" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Descrição</label>
+                            <textarea class="form-textarea" rows="5" placeholder="Descreva a tarefa..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Valor da Tarefa</label>
+                            <input type="number" class="form-input" placeholder="Ex: 10" min="0" max="100" required>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Criar Tarefa</button>
+                            <button type="reset" class="btn btn-secondary">Limpar</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Lista de Tarefas Criadas -->
+                <section class="card">
+                    <h2>Tarefas Recentes</h2>
+                    <div class="items-list">
+                        <div class="item-card">
+                            <div class="item-header">
+                                <h3>Título</h3>
+                                <span class="badge">Turma</span>
+                            </div>
+                            <p class="item-date">Vence em: <span>vencimento</span></p>
+                            <p class="item-desc">descrição</p>
+                            <div class="item-actions">
+                                <button class="btn btn-secondary btn-small">Editar</button>
+                                <button class="btn btn-secondary btn-small">Deletar</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Tab 2: Postar Material -->
+            <div class="tab-content" id="materials-tab">
+                <section class="card">
+                    <h2>Postar Novo Material</h2>
+                    <form class="form-container">
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Título do Material</label>
+                                <input type="text" class="form-input" placeholder="Ex: Aula sobre Fotossíntese" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="class">Turma</label>
+                                <select id="class" name="class" class="form-select" required>
+                                    <option value="">Selecione uma turma</option>
+                                    <option value="turma-id">Turma</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="description">Descrição</label>
+                            <textarea id="description"
+                                      name="description"
+                                      class="form-textarea"
+                                      rows="5" placeholder="Descreva o material..."
+                                      required>
+                            </textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Anexo</label>
+                            <input type="file" class="form-input" multiple>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Postar Material</button>
+                            <button type="reset" class="btn btn-secondary">Limpar</button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Lista de Materiais Postados -->
+                <section class="card">
+                    <h2>Materiais Postados</h2>
+                    <div class="items-list">
+                        <div class="item-card">
+                            <div class="item-header">
+                                <h3>📄 Aula sobre Fotossíntese</h3>
+                                <span class="badge">3º Ano - A</span>
+                            </div>
+                            <p class="item-date">Postado em: 10 de Novembro</p>
+                            <p class="item-desc">Apresentação em PDF sobre o processo de fotossíntese</p>
+                            <div class="item-actions">
+                                <button class="btn btn-secondary btn-small">Editar</button>
+                                <button class="btn btn-secondary btn-small">Deletar</button>
+                            </div>
+                        </div>
+
+                        <div class="item-card">
+                            <div class="item-header">
+                                <h3>🎥 Vídeo - Revolução Francesa</h3>
+                                <span class="badge">3º Ano - B</span>
+                            </div>
+                            <p class="item-date">Postado em: 8 de Novembro</p>
+                            <p class="item-desc">Documentário sobre a Revolução Francesa</p>
+                            <div class="item-actions">
+                                <button class="btn btn-secondary btn-small">Editar</button>
+                                <button class="btn btn-secondary btn-small">Deletar</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Tab 3: Gerenciar -->
+            <div class="tab-content" id="manage-tab">
+                <section class="card">
+                    <h2>Minhas Turmas</h2>
+                    <div class="classes-grid">
+                        <div class="class-card">
+                            <h3>Turma</h3>
+                            <p class="class-info">👥 <span th:text=""></span> alunos</p>
+                            <p class="class-info">📚 Curso</p>
+                            <button class="btn btn-secondary">Gerenciar</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Navegação entre tabs
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+
+                // Remove active de todos os tabs
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+                // Adiciona active ao tab clicado
+                this.classList.add('active');
+                document.getElementById(tabName + '-tab').classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

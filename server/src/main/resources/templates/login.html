@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - EduMania - Plataforma de Estudos</title>
+    <link rel="stylesheet" href="/static/login-style.css">
+</head>
+<body>
+
+    <div class="login-container">
+        <!-- Decoração de fundo removida para estilo flat -->
+        <div class="background-decoration"></div>
+
+        <!-- Card de Login -->
+        <div class="login-card">
+            <!-- Cabeçalho do Card -->
+            <div class="login-header">
+                <div class="login-icon">🎓</div>
+                <h1>Bem-vindo, Estudante</h1>
+                <p class="login-subtitle">Prepare-se para o conhecimento</p>
+            </div>
+
+            <!-- Formulário de Login -->
+            <form class="login-form" action="#" method="POST">
+                <!-- Campo de Email/Usuário -->
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input 
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="form-input" 
+                        placeholder="Digite seu login"
+                        required
+                    >
+                    <span class="form-icon">📧</span>
+                </div>
+
+                <!-- Campo de Senha -->
+                <div class="form-group">
+                    <label for="password" class="form-label">Senha</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Digite sua senha"
+                        required
+                    >
+                    <span class="form-icon">🔐</span>
+                </div>
+
+                <!-- Checkbox de Lembrar-se -->
+                <div class="form-remember">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">Lembrar-se de mim</label>
+                </div>
+
+                <!-- Botão de Login -->
+                <button type="submit" class="btn-login-submit">Acessar a Plataforma</button>
+
+                <div class="alert alert-danger" th:if="${error}">
+                    <span th:text="#{${error}}"></span>
+                </div>
+            </form>
+
+            <!-- Links Adicionais -->
+            <div class="login-footer">
+                <a href="#" class="login-link">Esqueceu sua senha?</a>
+                <span class="login-divider">|</span>
+                <a href="#" class="login-link">Criar uma conta</a>
+            </div>
+
+            <!-- Decoração inferior -->
+            <div class="login-decoration">
+                <span class="decoration-line"></span>
+                <span class="decoration-text">📚 EduMania 📚</span>
+                <span class="decoration-line"></span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

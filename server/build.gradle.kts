@@ -16,6 +16,7 @@ application {
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
+
 dependencies {
     implementation(libs.logback)
     implementation(libs.ktor.serverCore)
@@ -35,15 +36,6 @@ dependencies {
     implementation("io.ktor:ktor-server-sessions")
 
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:4.10.1")
-    implementation("io.insert-koin:koin-ktor:3.5.3")
 
     implementation("org.mindrot:jbcrypt:0.4")
-}
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.compilerOptions {
-    freeCompilerArgs.set(
-        listOf(
-            "-Xannotation-default-target=param-property"
-        )
-    )
 }

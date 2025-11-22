@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário - EduMania</title>
+    <link rel="stylesheet" href="/static/base.css">
+    <link rel="stylesheet" href="/static/calendar-style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
+'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background-color: #ffffff;
+            color: #003D99;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #003D99;
+        }
+
+        .month-navigation {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .nav-button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .nav-button svg {
+            width: 24px;
+            height: 24px;
+            color: #003D99;
+        }
+
+        .month-year {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #003D99;
+            min-width: 160px;
+            text-align: center;
+        }
+
+        .calendar {
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            background-color: #f5f5f5;
+        }
+
+        .day-header {
+            padding: 16px;
+            text-align: center;
+            font-weight: 700;
+            color: #003D99;
+            border-right: 1px solid #d0d0d0;
+            border-bottom: 1px solid #d0d0d0;
+        }
+
+        .day-header:last-child {
+            border-right: none;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+
+        .calendar-day {
+            min-height: 160px;
+            padding: 16px;
+            border-right: 1px solid #d0d0d0;
+            border-bottom: 1px solid #d0d0d0;
+            background-color: #ffffff;
+            transition: background-color 0.2s;
+        }
+
+        .calendar-day:hover {
+            background-color: #f9f9f9;
+        }
+
+        .calendar-day:nth-child(7n) {
+            border-right: none;
+        }
+
+        .calendar-day.last-row {
+            border-bottom: none;
+        }
+
+        .calendar-day.empty {
+            background-color: #fafafa;
+        }
+
+        .day-number {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #003D99;
+            margin-bottom: 12px;
+        }
+
+        .events-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .event {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            text-align: center;
+            white-space: normal;
+            word-wrap: break-word;
+            line-height: 1.2;
+            transition: box-shadow 0.2s;
+        }
+
+        .event:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .event-pink {
+            background-color: #E8B4D8;
+            color: #7A2E4F;
+        }
+
+        .event-blue {
+            background-color: #A8D5FF;
+            color: #0052CC;
+        }
+
+        .event-red {
+            background-color: #FF5555;
+            color: #ffffff;
+        }
+
+        .event-orange {
+            background-color: #FFB366;
+            color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .calendar-day {
+                min-height: 120px;
+                padding: 12px;
+                font-size: 0.85rem;
+            }
+
+            .day-number {
+                font-size: 0.75rem;
+            }
+
+            .event {
+                font-size: 0.65rem;
+                padding: 4px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Calendário de eventos</h1>
+            <div class="month-navigation">
+                <button class="nav-button" id="prevBtn" aria-label="Mês
+anterior">
+                    <svg viewBox="0 0 24 24" fill="none"
+stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <span class="month-year" id="monthYear"></span>
+                <button class="nav-button" id="nextBtn" aria-label="Próximo
+mês">
+                    <svg viewBox="0 0 24 24" fill="none"
+stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="calendar">
+            <div class="calendar-header">
+                <div class="day-header">DOM</div>
+                <div class="day-header">SEG</div>
+                <div class="day-header">TER</div>
+                <div class="day-header">QUA</div>
+                <div class="day-header">QUI</div>
+                <div class="day-header">SEX</div>
+                <div class="day-header">SÁB</div>
+            </div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        const MONTHS = [
+            'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+        ];
+
+        const EVENTS = [
+            { title: 'Semana de boas-vindas', date: 1, color: 'pink' },
+            { title: 'Reunião inicial', date: 2, color: 'blue' },
+            { title: 'Alinhamento semanal', date: 8, color: 'blue' },
+            { title: 'Período', date: 10, color: 'orange' },
+            { title: 'Evento de colaboração', date: 14, color: 'red' },
+            { title: 'Alinhamento semanal', date: 15, color: 'blue' },
+            { title: 'Alinhamento semanal', date: 22, color: 'blue' },
+            { title: 'Introdução a JAVA', date: 23, color: 'red' },
+            { title: 'Trabalho em dupla', date: 31, color: 'red' },
+        ];
+
+        let currentDate = new Date(2026, 1, 1);
+
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            // Atualizar mês e ano
+            document.getElementById('monthYear').textContent =
+`${MONTHS[month]} – ${year}`;
+
+            // Limpar grid
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            // Primeiro dia do mês
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Adicionar células vazias antes do primeiro dia
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day empty';
+                grid.appendChild(emptyDay);
+            }
+
+            // Adicionar dias do mês
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'calendar-day';
+
+                // Marcar última linha
+                if (day > daysInMonth - 7) {
+                    dayCell.classList.add('last-row');
+                }
+
+                // Número do dia
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = day;
+                dayCell.appendChild(dayNumber);
+
+                // Eventos
+                const eventsContainer = document.createElement('div');
+                eventsContainer.className = 'events-container';
+
+                const dayEvents = EVENTS.filter(e => e.date === day);
+                dayEvents.forEach(event => {
+                    const eventEl = document.createElement('div');
+                    eventEl.className = `event event-${event.color}`;
+                    eventEl.textContent = event.title;
+                    eventEl.title = event.title;
+                    eventsContainer.appendChild(eventEl);
+                });
+
+                dayCell.appendChild(eventsContainer);
+                grid.appendChild(dayCell);
+            }
+        }
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            currentDate = new Date(currentDate.getFullYear(),
+currentDate.getMonth() - 1, 1);
+            renderCalendar();
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            currentDate = new Date(currentDate.getFullYear(),
+currentDate.getMonth() + 1, 1);
+            renderCalendar();
+        });
+
+        // Renderizar calendário inicial
+        renderCalendar();
+    </script>
+</body>
+</html>
