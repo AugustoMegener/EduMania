@@ -34,7 +34,7 @@
                 </div>
                 <div class="alert" th:if="${pwd}">
                     <span>Senha temporária do novo usuário: </span>
-                    <span th:text="#{pwd}"></span>
+                    <span th:text="${pwd}"></span>
                 </div>
                 <div class="user-info">
                     <span>Sr(a). <span th:text="${user.lastName}"></span></span>
@@ -199,10 +199,12 @@
                                 <td th:text="${class.studentAmount}"></td>
                                 <td>
                                     <form method="post" action="/director/panel/add_user">
+                                        <input type="hidden" name="classPublicId" th:value="${class.publicId}">
                                         <label for="userPublicId"></label>
                                         <select name="userPublicId"
                                                 id="userPublicId"
                                                 class="form-input"
+                                                style="display:inline-block;width:150px"
                                                 required>
                                             <option th:each="student : ${students}"
                                                     th:value="${student.publicId}"
@@ -213,6 +215,9 @@
                                                     th:text="${teacher.firstName}">
                                             </option>
                                         </select>
+                                        <button type="submit"
+                                                class="btn btn-primary"
+                                                style="display:inline-block">+</button>
                                     </form>
                                 </td>
                                 <td>

@@ -8,4 +8,5 @@ data class ActionForm(val publicId: Long, val action: Action) {
 
     @Serializable
     enum class Action { @SerialName("EDIT") EDIT, @SerialName("DELETE") DELETE }
+
 }

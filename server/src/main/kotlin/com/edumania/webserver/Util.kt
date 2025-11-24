@@ -20,9 +20,11 @@ import org.bson.conversions.Bson
 import org.mindrot.jbcrypt.BCrypt.gensalt
 import org.mindrot.jbcrypt.BCrypt.hashpw
 
-infix fun <T> String.eq(value: T) = Filters.eq(this, value)
-infix fun Bson.and(value: Bson) = Filters.and(this, value)
-fun all(vararg values: Bson) = Filters.and(*values)
+infix fun <T> String.eq(value: T): Bson = Filters.eq(this, value)
+infix fun <T : Any> String.gt(value: T): Bson = Filters.gt(this, value)
+infix fun <T : Any> String.lt(value: T): Bson = Filters.lt(this, value)
+infix fun Bson.and(value: Bson): Bson = Filters.and(this, value)
+fun all(vararg values: Bson): Bson = Filters.and(*values)
 
 fun passwordHash(password: String): String = hashpw(password, gensalt(12))
 

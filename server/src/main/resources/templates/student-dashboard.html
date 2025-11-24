@@ -16,9 +16,9 @@
             </div>
 
             <nav class="sidebar-menu">
-                <a href="/chat" class="menu-item">💬 Chat</a>
+                <!--<a href="/chat" class="menu-item">💬 Chat</a>-->
                 <a href="/library" class="menu-item">📚 Biblioteca</a>
-                <a href="/calendar" class="menu-item">📅 Calendário</a>
+                <!--<a href="/calendar" class="menu-item">📅 Calendário</a>-->
                 <a href="/logout" class="menu-item">🚪 Sair</a>
             </nav>
         </aside>
@@ -28,7 +28,7 @@
             <!-- Cabeçalho com Saudação -->
             <div class="dashboard-header">
                 <div>
-                    <h1>Bem-vindo, <span th:text="${user.firstName}"></span>>!</h1>
+                    <h1>Bem-vindo, <span th:text="${user.firstName}"></span>!</h1>
                     <p class="subtitle">Aqui está seu resumo de hoje</p>
                 </div>
                 <div class="user-info">
@@ -41,22 +41,6 @@
 
             <!-- Grid Principal -->
             <div class="dashboard-grid">
-                <!-- Mini Agenda -->
-                <section class="card agenda-section">
-                    <div class="section-header">
-                        <h2>📅 Próximos Eventos</h2>
-                        <a href="/calendar" class="link-small">Ver tudo</a>
-                    </div>
-                    <div class="agenda-list">
-                        <div class="agenda-item">
-                            <div class="agenda-time">XXhXX</div>
-                            <div class="agenda-content">
-                                <div class="agenda-title">Título</div>
-                                <div class="agenda-subtitle">Subtitulo</div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
 
                 <!-- Tarefas Pendentes -->
                 <section class="card tasks-section">
@@ -65,11 +49,12 @@
                         <!--<a href="#tasks" class="link-small">Ver tudo</a>-->
                     </div>
                     <div class="tasks-list">
-                        <div class="task-item pending">
+                        <div class="task-item pending" th:each="task : ${pendingTasks}">
                             <div class="task-status">⏳</div>
                             <div class="task-content">
-                                <div class="task-title">Titulo</div>
-                                <div class="task-date">Prazo</div>
+                                <div class="task-title" th:text="${task.title}"></div>
+                                <p th:text="${task.description}"></p>
+                                <div class="task-date" th:text="${task.dueDate}"></div>
                             </div>
                         </div>
                     </div>

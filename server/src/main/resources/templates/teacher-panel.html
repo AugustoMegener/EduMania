@@ -31,7 +31,7 @@
             <!-- Cabeçalho -->
             <div class="panel-header">
                 <div>
-                    <h1>Painel do Professor</h1>
+                    <h1>Painel do Professor - <span th:text="${code}"></span></h1>
                     <p class="subtitle">Gerencie suas aulas e tarefas</p>
                 </div>
                 <div class="user-info">
@@ -91,8 +91,23 @@
                             <p class="item-date">Vence em: <span th:text="${task.dueDate}"></span></p>
                             <p class="item-desc" th:text="${task.description}"></p>
                             <div class="item-actions">
-                                <button class="btn btn-secondary btn-small">Editar</button>
-                                <button class="btn btn-secondary btn-small">Deletar</button>
+                                <form method="post" action="./task" >
+                                    <input type="hidden" name="publicId" th:value="${task.id}">
+                                    <button id="edit"
+                                            name="action"
+                                            type="submit"
+                                            value="EDIT"
+                                            class="btn btn-secondary btn-small">
+                                        Editar
+                                    </button>
+                                    <button id="delete"
+                                            name="action"
+                                            type="submit"
+                                            value="DELETE"
+                                            class="btn btn-secondary btn-small">
+                                        Deletar
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -103,11 +118,16 @@
             <div class="tab-content" id="materials-tab">
                 <section class="card">
                     <h2>Postar Novo Material</h2>
-                    <form class="form-container" method="post" action="./new_material">
+                    <form class="form-container" method="post" action="./new_material" enctype="multipart/form-data">
                         <div class="form-row">
                             <div class="form-group">
                                 <label class="form-label" for="title">Título do Material</label>
-                                <input id="title" name="title" type="text" class="form-input" placeholder="Ex: Aula sobre Fotossíntese" required>
+                                <input id="title"
+                                       name="title"
+                                       type="text"
+                                       class="form-input"
+                                       placeholder="Ex: Aula sobre Fotossíntese"
+                                       required>
                             </div>
                         </div>
 
@@ -123,7 +143,7 @@
 
                         <div class="form-group">
                             <label class="form-label">Anexo</label>
-                            <input name="files" type="file" class="form-input" multiple>
+                            <input name="files" type="file" class="form-input">
                         </div>
 
                         <div class="form-actions">
@@ -136,29 +156,30 @@
                 <section class="card">
                     <h2>Materiais Postados</h2>
                     <div class="items-list">
-                        <div class="item-card">
+                        <div class="item-card" th:each="resource : ${resources}">
                             <div class="item-header">
-                                <h3>📄 Aula sobre Fotossíntese</h3>
-                                <span class="badge">3º Ano - A</span>
+                                <h3 th:text="${resource.title}"></h3>
                             </div>
-                            <p class="item-date">Postado em: 10 de Novembro</p>
-                            <p class="item-desc">Apresentação em PDF sobre o processo de fotossíntese</p>
+                            <p class="item-desc" th:text="${resource.description}"></p>
+                            <a th:href="'/resource/'+${classId}+'/'+${resource.id}" th:text="${resource.fileName}"></a>
                             <div class="item-actions">
-                                <button class="btn btn-secondary btn-small">Editar</button>
-                                <button class="btn btn-secondary btn-small">Deletar</button>
-                            </div>
-                        </div>
-
-                        <div class="item-card">
-                            <div class="item-header">
-                                <h3>🎥 Vídeo - Revolução Francesa</h3>
-                                <span class="badge">3º Ano - B</span>
-                            </div>
-                            <p class="item-date">Postado em: 8 de Novembro</p>
-                            <p class="item-desc">Documentário sobre a Revolução Francesa</p>
-                            <div class="item-actions">
-                                <button class="btn btn-secondary btn-small">Editar</button>
-                                <button class="btn btn-secondary btn-small">Deletar</button>
+                                <form method="post" action="./resource" >
+                                    <input type="hidden" name="publicId" th:value="${resource.id}">
+                                    <button id="edit"
+                                            name="action"
+                                            type="submit"
+                                            value="EDIT"
+                                            class="btn btn-secondary btn-small">
+                                        Editar
+                                    </button>
+                                    <button id="delete"
+                                            name="action"
+                                            type="submit"
+                                            value="DELETE"
+                                            class="btn btn-secondary btn-small">
+                                        Deletar
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -169,12 +190,12 @@
             <div class="tab-content" id="manage-tab">
                 <section class="card">
                     <h2>Minhas Turmas</h2>
-                    <div class="classes-grid">
+                    <div class="classes-grid" th:each="class : ${otherClasses}">
                         <div class="class-card">
-                            <h3>Turma</h3>
-                            <p class="class-info">👥 <!--<span th:text=""></span>*--> alunos</p>
-                            <p class="class-info">📚 Curso</p>
-                            <button class="btn btn-secondary">Gerenciar</button>
+                            <h3 th:text="${class.code}"></h3>
+                            <p class="class-info">👥 <span th:text="${class.studentAmount}"></span> alunos</p>
+                            <p class="class-info" th:text="${class.courseName}"></p>
+                            <a th:href="'/teacher/panel/'+${class.publicId}+'/'" class="btn btn-secondary">Gerenciar</a>
                         </div>
                     </div>
                 </section>

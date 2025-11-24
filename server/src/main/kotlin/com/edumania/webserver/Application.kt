@@ -4,6 +4,7 @@ import com.edumania.webserver.db.Database.classes
 import com.edumania.webserver.db.Database.courses
 import com.edumania.webserver.db.Database.initDB
 import com.edumania.webserver.db.Database.users
+import com.edumania.webserver.db.collection.CourseClass
 import com.edumania.webserver.db.collection.User
 import com.edumania.webserver.web.UserSession
 import com.edumania.webserver.web.form.ActionForm
@@ -18,17 +19,20 @@ import com.edumania.webserver.web.form.SignupForm
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Updates
 import io.ktor.http.*
+import io.ktor.http.content.PartData
+import io.ktor.http.content.forEachPart
 import io.ktor.serialization.gson.*
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.request.receiveMultipart
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import io.ktor.server.thymeleaf.*
-import io.ktor.util.toMap
+import io.ktor.utils.io.toByteArray
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.firstOrNull
@@ -37,10 +41,15 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.mindrot.jbcrypt.BCrypt
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver
+import java.time.Instant
+import java.time.LocalDate
+import java.time.temporal.TemporalAmount
+import java.util.Date
 import kotlin.onFailure
+import kotlin.time.ExperimentalTime
 
 
-@OptIn(DelicateCoroutinesApi::class)
+@OptIn(DelicateCoroutinesApi::class, ExperimentalTime::class)
 fun main() {
     GlobalScope.launch {
         initDB()
@@ -49,6 +58,7 @@ fun main() {
         .start(wait = true)
 }
 
+@ExperimentalTime
 suspend fun Application.module() {
 
     install(Sessions) {
@@ -149,8 +159,30 @@ suspend fun Application.module() {
         }
 
         get("/student/dashboard") {
-            withSession(User.UserKind.STUDENT) {
-                call.respond(ThymeleafContent("student-dashboard", mapOf("user" to it)))
+            withSession(User.UserKind.STUDENT) { user ->
+                call.respond(ThymeleafContent("student-dashboard",
+                    mapOf(
+                        "user" to user,
+                        "pendingTasks" to (classes.query(
+                            ("membersPublicIds" eq user.publicId)
+                        ).getOrNull()?.toList()?.flatMap { it.tasks }
+                            ?.filter { LocalDate.parse(it.dueDate) >= LocalDate.now() } ?: listOf())
+                    )
+                ))
+            }
+        }
+
+
+        get("/library") {
+            withSession(User.UserKind.STUDENT) { user ->
+                call.respond(ThymeleafContent("library",
+                    mapOf(
+                        "user" to user,
+                        "resources" to (classes.query(
+                            ("membersPublicIds" eq user.publicId)
+                        ).getOrNull()?.toList()?.flatMap { a -> a.resources.map { a.publicId to it } } ?: listOf())
+                    )
+                ))
             }
         }
 
@@ -162,14 +194,20 @@ suspend fun Application.module() {
                     ?.let { classes.query(("publicId" eq it) and ("membersPublicIds" eq user.publicId)) }
                     ?.onSuccess { flow ->
                         flow.firstOrNull()
-                            ?.let {
+                            ?.let { cls ->
                                 call.respond(
                                     ThymeleafContent(
                                         "teacher-panel",
                                         mapOf(
-                                            "classId" to call.parameters["classPublicId"],
+                                            "classId" to cls.publicId,
+                                            "code" to cls.code,
+                                            "otherClasses" to (
+                                                classes.query(Filters.not("publicId" eq cls.publicId))
+                                                    .getOrNull()?.toList()?.map { it.toEntry() } ?: listOf()
+                                            ),
                                             "user" to user,
-                                            "tasks" to it.tasks,
+                                            "tasks" to cls.tasks,
+                                            "resources" to cls.resources
                                         )
                                     )
                                 )
@@ -184,7 +222,6 @@ suspend fun Application.module() {
                                         }
                                     }
                                     .onFailure { call.respond(HttpStatusCode.InternalServerError, it.message ?: "") }
-
                             }
                     }
                     ?.onFailure { call.respond(HttpStatusCode.InternalServerError, it.message ?: "") }
@@ -199,6 +236,73 @@ suspend fun Application.module() {
                         Updates.addToSet("tasks", call.formReceive<NewTaskForm>().createTask(user.publicId))
                     )
                     call.respondRedirect("/teacher/panel/${it}/")
+                }
+            }
+        }
+
+        post("/teacher/panel/{classPublicId}/task") {
+            withSession(User.UserKind.TEACHER) { user ->
+                (call.parameters["classPublicId"]?.toLongOrNull())?.let {
+                    val form = call.formReceive<ActionForm>()
+
+                    when(form.action) {
+                        EDIT -> call.respondRedirect("/teacher/panel/${it}/")
+                        DELETE -> {
+                            classes.updateOne("publicId" eq it, Updates.pull("tasks", "id" eq form.publicId))
+                            call.respondRedirect("/teacher/panel/${it}/")
+                        }
+                    }
+                }
+            }
+        }
+
+        post("/teacher/panel/{classPublicId}/new_material") {
+            withSession(User.UserKind.TEACHER) { user ->
+                (call.parameters["classPublicId"]?.toLongOrNull())?.let { classId ->
+                    var title = ""
+                    var description = ""
+                    var fileName = ""
+                    var fileBytes = byteArrayOf()
+
+                    call.receiveMultipart().forEachPart {
+                        when(it) {
+                            is PartData.FormItem ->
+                                when(it.name) {
+                                    "title" -> title = it.value
+                                    "description" -> description = it.value
+                                }
+                            is PartData.FileItem -> {
+                                fileName = it.originalFileName ?: "file"
+                                fileBytes = it.provider().toByteArray()
+                            }
+                            else -> error("")
+                        }
+                    }
+
+                    classes.updateOne(
+                        "publicId" eq classId,
+                        Updates.addToSet("resources", CourseClass.Resource(
+                            title, description, user.publicId, fileName, fileBytes
+                        ))
+                    )
+
+                    call.respondRedirect("/teacher/panel/${classId}/")
+                }
+            }
+        }
+
+        post("/teacher/panel/{classPublicId}/resource") {
+            withSession(User.UserKind.TEACHER) { user ->
+                (call.parameters["classPublicId"]?.toLongOrNull())?.let {
+                    val form = call.formReceive<ActionForm>()
+
+                    when(form.action) {
+                        EDIT -> call.respondRedirect("/teacher/panel/${it}/")
+                        DELETE -> {
+                            classes.updateOne("publicId" eq it, Updates.pull("resources", "id" eq form.publicId))
+                            call.respondRedirect("/teacher/panel/${it}/")
+                        }
+                    }
                 }
             }
         }
@@ -317,7 +421,7 @@ suspend fun Application.module() {
                             val (pwd, user) = form.createPasswordAndUser(User.UserKind.TEACHER)
 
                             users.add(user).onSuccess {
-                                call.respondRedirect("/director/panel#teachers?pwd=${pwd}")
+                                call.respondRedirect("/director/panel?pwd=${pwd}")
                             }.onFailure {
                                 call.respond(HttpStatusCode.InternalServerError, it.message ?: "")
                             }
@@ -390,6 +494,28 @@ suspend fun Application.module() {
                     Updates.addToSet("membersPublicIds", form.userPublicId)
                 )
                 call.respondRedirect("/director/panel#class")
+            }
+        }
+
+        get("/resource/{classId}/{queryId}") {
+            val classId = call.parameters["classId"]?.toLongOrNull()
+            val queryId = call.parameters["queryId"]?.toLongOrNull()
+
+            val resource =
+                classes.query("publicId" eq classId).getOrNull()?.firstOrNull()?.resources?.find { it.id == queryId }
+
+            if (resource != null) {
+                call.response.header(
+                    HttpHeaders.ContentDisposition,
+                    ContentDisposition.Attachment.withParameter(
+                        ContentDisposition.Parameters.FileName,
+                        resource.fileName
+                    ).toString()
+                )
+
+                call.respondBytes(resource.file)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
             }
         }
     }

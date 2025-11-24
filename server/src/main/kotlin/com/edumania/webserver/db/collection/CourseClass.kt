@@ -5,6 +5,7 @@ import com.edumania.webserver.eq
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.serialization.Serializable
 import kotlin.random.Random
+import kotlin.random.Random.Default.nextLong
 
 @Serializable
 data class CourseClass(
@@ -23,7 +24,8 @@ data class CourseClass(
         val creator: Long,
         val dueDate: String,
         val weight: Float,
-        val notes: List<Pair<Long, Float>> = listOf()
+        val notes: List<Pair<Long, Float>> = listOf(),
+        val id: Long = nextLong()
     )
 
     @Serializable
@@ -31,8 +33,27 @@ data class CourseClass(
         val title: String,
         val description: String,
         val creator: Long,
-        val files: List<ByteArray>,
-    )
+        val fileName: String,
+        val file: ByteArray,
+        val id: Long = nextLong()
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Resource) return false
+
+            return id == other.id
+        }
+
+        override fun hashCode(): Int {
+            var result = creator.hashCode()
+            result = 31 * result + id.hashCode()
+            result = 31 * result + title.hashCode()
+            result = 31 * result + description.hashCode()
+            result = 31 * result + fileName.hashCode()
+            result = 31 * result + file.contentHashCode()
+            return result
+        }
+    }
 
     suspend fun toEntry() =
         ClassEntry(

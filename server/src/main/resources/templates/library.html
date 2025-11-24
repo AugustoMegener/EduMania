@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -470,6 +470,8 @@ transparent 50%),
 
         .book-card {
             animation: fadeIn 0.5s ease forwards;
+            display: inline-block;
+            width: 200px;
         }
 
         .book-card:nth-child(1) { animation-delay: 0.1s; }
@@ -494,51 +496,24 @@ transparent 50%),
             <p>Acervo de Livros sobre Tecnologia da Informação</p>
         </div>
 
-        <!-- FILTROS -->
-        <div class="card filters-section">
-            <div class="filters-title">Filtrar Livros</div>
-            <div class="filters-grid">
-                <div class="filter-group">
-                    <label class="filter-label">Título</label>
-                    <input type="text" id="filterTitle" class="form-input"
-placeholder="Digite o título...">
-                </div>
-                <div class="filter-group">
-                    <label class="filter-label">Autor</label>
-                    <input type="text" id="filterAuthor" class=
-"filter-input" placeholder="Digite o autor...">
-                </div>
-                <div class="filter-group">
-                    <label class="filter-label">Gênero</label>
-                    <select id="filterGenre" class="form-select">
-                        <option value="">Todos os Gêneros</option>
-                        <option value="Programação">Programação</option>
-                        <option value="Web Development">Web Development</
-option>
-                        <option value="Banco de Dados">Banco de Dados</
-option>
-                        <option value="Algoritmos">Algoritmos</option>
-                        <option value="Segurança">Segurança</option>
-                        <option value="DevOps">DevOps</option>
-                        <option value="Machine Learning">Machine Learning</
-option>
-                        <option value="Cloud Computing">Cloud Computing</
-option>
-                    </select>
-                </div>
-                <div class="filter-buttons">
-                    <button class="btn btn-primary" onclick="filterBooks()">
-Buscar</button>
-                    <button class="btn btn-secondary" onclick="resetFilters()">
-Limpar</button>
-                </div>
-            </div>
-        </div>
 
-        <!-- RESULTADO DA BUSCA -->
         <div class="search-result">
-            Exibindo <span class="result-count" id="resultCount">12</span>
-livros
+            Exibindo
+
+            <div class="card book-card" th:each="book : ${resources}">
+                <a th:href="'/resource/'+${book.first}+'/'+${book.second.id}">
+                    <figure class="book-cover-figure">
+                        <div class="book-cover">
+                            <div class="book-cover-content">
+                                <div class="book-cover-title" th:text="${book.second.title}"></div>
+                            </div>
+                        </div>
+                        <figcaption class="book-info">
+                            <h3 class="book-title" th:text="${book.second.description}"></h3>
+                        </figcaption>
+                    </figure>
+                </a>
+            </div>
         </div>
 
         <!-- GRID DE LIVROS -->
@@ -547,262 +522,6 @@ livros
         </div>
     </div>
 
-    <script>
-        // Base de dados de livros de TI
-        const books = /*[
-            {
-                id: 1,
-                title: "Python para Análise de Dados",
-                author: "Wes McKinney",
-                genre: "Programação",
-                year: 2012,
-                pages: 622,
-                rating: 4.8,
-                coverText: "PYTHON\nDATA\nANALYSIS",
-                gradient: "gradient-1"
-            },
-            {
-                id: 2,
-                title: "JavaScript: O Guia Definitivo",
-                author: "David Flanagan",
-                genre: "Web Development",
-                year: 2020,
-                pages: 1096,
-                rating: 4.9,
-                coverText: "JAVASCRIPT\nDEFINITIVO",
-                gradient: "gradient-2"
-            },
-            {
-                id: 3,
-                title: "Estrutura de Dados com C",
-                author: "Bhargava & Aditya",
-                genre: "Algoritmos",
-                year: 2016,
-                pages: 476,
-                rating: 4.7,
-                coverText: "ESTRUTURA\nDE\nDADOS",
-                gradient: "gradient-3"
-            },
-            {
-                id: 4,
-                title: "SQL Avançado para Profissionais",
-                author: "Itzik Ben-Gan",
-                genre: "Banco de Dados",
-                year: 2015,
-                pages: 880,
-                rating: 4.8,
-                coverText: "SQL\nAVANÇADO",
-                gradient: "gradient-4"
-            },
-            {
-                id: 5,
-                title: "Segurança em Aplicações Web",
-                author: "Andrew Hoffman",
-                genre: "Segurança",
-                year: 2018,
-                pages: 512,
-                rating: 4.6,
-                coverText: "SEGURANÇA\nWEB",
-                gradient: "gradient-5"
-            },
-            {
-                id: 6,
-                title: "Docker: Containerização Prática",
-                author: "Nigel Poulton",
-                genre: "DevOps",
-                year: 2019,
-                pages: 448,
-                rating: 4.7,
-                coverText: "DOCKER\nCONTAINERS",
-                gradient: "gradient-6"
-            },
-            {
-                id: 7,
-                title: "Machine Learning com TensorFlow",
-                author: "Aurélien Géron",
-                genre: "Machine Learning",
-                year: 2019,
-                pages: 1000,
-                rating: 4.8,
-                coverText: "MACHINE\nLEARNING",
-                gradient: "gradient-7"
-            },
-            {
-                id: 8,
-                title: "Kubernetes em Produção",
-                author: "Kelsey Hightower",
-                genre: "Cloud Computing",
-                year: 2017,
-                pages: 368,
-                rating: 4.6,
-                coverText: "KUBERNETES\nPRODUÇÃO",
-                gradient: "gradient-8"
-            },
-            {
-                id: 9,
-                title: "React: Desenvolvimento Moderno",
-                author: "Robin Wieruch",
-                genre: "Web Development",
-                year: 2021,
-                pages: 544,
-                rating: 4.7,
-                coverText: "REACT\nMODERNO",
-                gradient: "gradient-9"
-            },
-            {
-                id: 10,
-                title: "AWS: Serviços em Nuvem",
-                author: "Stephane Maarek",
-                genre: "Cloud Computing",
-                year: 2020,
-                pages: 720,
-                rating: 4.8,
-                coverText: "AWS\nCLOUD",
-                gradient: "gradient-10"
-            },
-            {
-                id: 11,
-                title: "Padrões de Design em Java",
-                author: "Gang of Four",
-                genre: "Programação",
-                year: 2002,
-                pages: 416,
-                rating: 4.9,
-                coverText: "DESIGN\nPATTERNS",
-                gradient: "gradient-11"
-            },
-            {
-                id: 12,
-                title: "Git: Controle de Versão",
-                author: "Scott Chacon",
-                genre: "DevOps",
-                year: 2014,
-                pages: 456,
-                rating: 4.7,
-                coverText: "GIT\nVERSÃO",
-                gradient: "gradient-12"
-            }
-        ];*/
 
-        // Função para renderizar livros
-        function renderBooks(filteredBooks = books) {
-            const grid = document.getElementById('booksGrid');
-            const resultCount = document.getElementById('resultCount');
-
-            resultCount.textContent = filteredBooks.length;
-
-            if (filteredBooks.length === 0) {
-                grid.innerHTML = `
-                    <div class="no-results">
-                        <div class="no-results-icon">📭</div>
-                        <div class="no-results-text">Nenhum livro
-encontrado</div>
-                        <p>Tente ajustar seus filtros de busca</p>
-                    </div>
-                `;
-                return;
-            }
-
-            grid.innerHTML = filteredBooks.map(book => `
-                <div class="card book-card">
-                    <figure class="book-cover-figure">
-                        <div class="book-cover ${book.gradient}">
-                            <div class="book-cover-content">
-                                <div class="book-cover-title">${book.
-coverText}</div>
-                            </div>
-                        </div>
-                        <figcaption class="book-info">
-                            <h3 class="book-title">${book.title}</h3>
-                            <p class="book-author">por ${book.author}</p>
-
-                            <div class="book-meta">
-                                <span class="book-badge genre">${book.genre}
-</span>
-                                <span class="book-badge year">${book.year}
-</span>
-                                <span class="book-badge pages">${book.pages}
-pgs</span>
-                            </div>
-
-                            <div class="book-details">
-                                <div class="detail-row">
-                                    <span
-class="detail-label">Publicado:</span>
-                                    <span class="detail-value">${book.year}
-</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span
-class="detail-label">Páginas:</span>
-                                    <span class="detail-value">${book.pages}
-</span>
-                                </div>
-                                <div class="detail-row">
-                                    <span
-class="detail-label">Gênero:</span>
-                                    <span class="detail-value">${book.genre}
-</span>
-                                </div>
-                            </div>
-
-                            <div class="book-rating">
-                                <div class="stars">
-                                    ${Array(5).fill(0).map((_, i) => `
-                                        <span class="star ${i < Math.floor(
-book.rating) ? '' : 'empty'}">★</span>
-                                    `).join('')}
-                                </div>
-                                <span class="rating-text">${book.rating}
-</span>
-                            </div>
-                        </figcaption>
-                    </figure>
-                </div>
-            `).join('');
-        }
-
-        // Função para filtrar livros
-        function filterBooks() {
-            const titleFilter = document.getElementById('filterTitle').value
-.toLowerCase();
-            const authorFilter = document.getElementById('filterAuthor').
-value.toLowerCase();
-            const genreFilter = document.getElementById('filterGenre').value
-;
-
-            const filtered = books.filter(book => {
-                const titleMatch = book.title.toLowerCase().includes(
-titleFilter);
-                const authorMatch = book.author.toLowerCase().includes(
-authorFilter);
-                const genreMatch = !genreFilter || book.genre ===
-genreFilter;
-
-                return titleMatch && authorMatch && genreMatch;
-            });
-
-            renderBooks(filtered);
-        }
-
-        // Função para limpar filtros
-        function resetFilters() {
-            document.getElementById('filterTitle').value = '';
-            document.getElementById('filterAuthor').value = '';
-            document.getElementById('filterGenre').value = '';
-            renderBooks();
-        }
-
-        // Event listeners para filtros em tempo real
-        document.getElementById('filterTitle').addEventListener('keyup',
-filterBooks);
-        document.getElementById('filterAuthor').addEventListener('keyup',
-filterBooks);
-        document.getElementById('filterGenre').addEventListener('change',
-filterBooks);
-
-        // Renderizar livros ao carregar
-        renderBooks();
-    </script>
 </body>
 </html>
